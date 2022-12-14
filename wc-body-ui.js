@@ -29,7 +29,6 @@ class UnityBodyUI extends HTMLElement {
         <div id="unity-footer">
             <div id="unity-webgl-logo"></div>
             <div id="unity-fullscreen-button"></div>
-            <div id="unity-build-title">unity-body-ui</div>
         </div>
         </div>
         `;

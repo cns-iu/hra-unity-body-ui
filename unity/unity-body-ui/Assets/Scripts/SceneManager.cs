@@ -14,7 +14,7 @@ public class SceneManager : MonoBehaviour
     public Camera cam;
 
     [Header("Interactivity")]
-    public bool interactivity;
+    public bool interactivity = true;
 
     public void SetCameraInteractivity(bool interacive)
     {

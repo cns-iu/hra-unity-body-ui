@@ -138,7 +138,7 @@ public class JSBridge : MonoBehaviour
         //set the perspective bounds of the camera
 
         //Set the unity scene with the val
-
+        
         //convert the data to json and output it as an event
     }
 
@@ -219,7 +219,7 @@ public class JSBridge : MonoBehaviour
 
         string json = JsonUtility.ToJson(node);
 
-        WebGLPluginJS.SendOutput(id, "nodeHoverStart", json);
+        //WebGLPluginJS.SendOutput(id, "nodeHoverStart", json);
     }
 
     public void GetNodeHoverStop()
