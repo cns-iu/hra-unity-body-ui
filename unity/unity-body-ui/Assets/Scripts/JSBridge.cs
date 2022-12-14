@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Threading.Tasks;
+using UnityEngine.Networking;
+using TMPro;
 
 public class JSBridge : MonoBehaviour
 {
@@ -9,7 +12,13 @@ public class JSBridge : MonoBehaviour
 
     private string id = "placeHolder";
 
-            //Initial Setter\\
+    [SerializeField] private NodeArray nodeArray;
+
+    public TextMeshProUGUI textbox;
+
+    [SerializeField] private SceneConfiguration sceneConfiguration;
+
+    //Initial Setter\\
     public void SetInstance(string _id)
     {
         id = _id;
@@ -18,7 +27,49 @@ public class JSBridge : MonoBehaviour
         GetInitialized();
     }
 
-                //Inputs\\
+    private async void Start()
+    {
+        Debug.Log("Why no work");
+        nodeArray = await Get("https://ccf-api.hubmapconsortium.org/v1/scene");
+        textbox.text = nodeArray.nodes.Length.ToString();
+    }
+
+
+    public async Task<NodeArray> Get(string url)
+    {
+        try
+        {
+            using var www = UnityWebRequest.Get(url);
+            var operation = www.SendWebRequest();
+
+            while (!operation.isDone)
+                await Task.Yield();
+
+            if (www.result != UnityWebRequest.Result.Success)
+                Debug.LogError($"Failed: {www.error}");
+
+            var result = www.downloadHandler.text;
+
+            var text = www.downloadHandler.text
+           .Replace("@id", "jsonLdId")
+           .Replace("@type", "jsonLdType")
+           .Replace("\"object\":", "\"glbObject\":");
+
+            NodeArray _nodeArray = JsonUtility.FromJson<NodeArray>(
+                "{ \"nodes\":" +
+                text
+                + "}"
+                );
+            return _nodeArray;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"{nameof(Get)} failed: {ex.Message}");
+            return default;
+        }
+    }
+
+    //Inputs\\
     public void SetRotationX(float rotationX)
     {
         //Set the unity scene with the val
@@ -220,6 +271,12 @@ public class JSBridge : MonoBehaviour
     }
 
     [Serializable]
+    public class NodeArray
+    {
+        [SerializeField] public SpatialSceneNode[] nodes;
+    }
+
+    [Serializable]
     public class SpatialSceneNode
     {
         public string jsonLdId;
@@ -244,7 +301,15 @@ public class JSBridge : MonoBehaviour
         public float priority;
 
         public int rui_rank;
-        //public GLBObject glbObject; //for reference organs
+        public GLBObject glbObject; //for reference organs
         public string sex; //for reference organs
     }
+
+    [Serializable]
+    public class GLBObject
+    {
+        public string id;
+        public string file;
+    }
+
 }

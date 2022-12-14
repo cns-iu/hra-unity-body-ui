@@ -2,9 +2,14 @@
 window.UNITY_BODY_UI_REGISTRY = {};
 
 class UnityBodyUI extends HTMLElement {
+    #myGameInstance = null;
+
     constructor() {
         super();
         this.innerHTML = this.template;
+
+        
+    
     
         window.UNITY_BODY_UI_REGISTRY[this.id] = this;
     }
@@ -112,7 +117,7 @@ class UnityBodyUI extends HTMLElement {
             loadingBar.style.display = "none";
             
             //game loaded initialize data
-            //this.setUnityInstance(unityInstance);
+            this.setUnityInstance(unityInstance);
 
             fullscreenButton.onclick = () => {
                 unityInstance.SetFullscreen(1);
