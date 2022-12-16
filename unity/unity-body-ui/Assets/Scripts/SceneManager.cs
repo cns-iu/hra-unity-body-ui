@@ -42,11 +42,11 @@ public class SceneManager : MonoBehaviour
 
     public void SetCameraType(string cameraType)
     {
-        if (false)
+        if (cameraType == "orthographic")
         {
             cam.orthographic = true;
         }
-        else if (false)
+        else if (cameraType == "perspective")
         {
             cam.orthographic = false;
         }

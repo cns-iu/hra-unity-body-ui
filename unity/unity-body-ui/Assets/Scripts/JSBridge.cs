@@ -70,8 +70,11 @@ public class JSBridge : MonoBehaviour
     }
 
     //Inputs\\
-    public void SetRotationX(float rotationX)
+    public void SetRotationx(string rotationString)
     {
+        //attribute change callback is going to throw a string
+        float rotationX = float.Parse(rotationString);
+
         //Set the unity scene with the val
         sceneManager.SetOrganRotationX(rotationX);
 
@@ -88,8 +91,11 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "rotationX", json);
     }
 
-    public void SetRotationY(float rotationY)
+    public void SetRotationy(string rotationString)
     {
+        //attribute change callback is going to throw a string
+        float rotationY = float.Parse(rotationString);
+
         //Set the unity scene with the val
         sceneManager.SetOrganRotationY(rotationY);
 
@@ -106,8 +112,11 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "rotation", json);
     }
 
-    public void SetZoom(float zoom)
+    public void SetZoom(string zoomString)
     {
+        //attribute change callback is going to throw a string
+        float zoom = float.Parse(zoomString);
+
         //Set the unity scene with the val
         sceneManager.SetCameraZoom(zoom);
 
@@ -160,8 +169,10 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "camera", json);
     }
 
-    public void SetInteractivity(bool interactive)
+    public void SetInteractive(string interactivityString)
     {
+        bool interactive = Convert.ToBoolean(interactivityString);
+
         //Set the unity scene with the val
         sceneManager.SetCameraInteractivity(interactive);
 

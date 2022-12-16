@@ -19,6 +19,8 @@ public class OrganControlScript : MonoBehaviour
     //private vars
     private Vector3 myObjectStartPosition, myMouseStartWorldPosition;
 
+    private bool hovering = false;
+
     private bool isRotating = false;
     private bool isTranslating = false;
     private Transform _transform;
@@ -37,31 +39,28 @@ public class OrganControlScript : MonoBehaviour
     {
         //Trigger the mouse down output in the JS Bridge
         jsBridge.GetNodeHoverStart();
+
+        hovering = true;
     }
 
     private void OnMouseExit()
     {
         //Trigger the mouse down output in the JS Bridge
         jsBridge.GetNodeHoverStop();
+
+        hovering = false;
     }
 
         //Mouse Hover and Move Triggers\\
     private void Update()
     {
-        if (sceneManager.interactivity)
+        //only trigger when active scene node
+        if (hovering)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 //Trigger the mouse down output in the JS Bridge
                 jsBridge.GetNodeClick();
-
-                //set the bool to enable rotation during drag
-                isRotating = true;
-
-                //start rolling ball
-                Vector3 lMousePosition = Input.mousePosition;
-                myMouseStartWorldPosition = lMousePosition;
-                myObjectStartPosition = transform.position;
             }
             else if (Input.GetMouseButtonDown(1))
             {
@@ -72,33 +71,11 @@ public class OrganControlScript : MonoBehaviour
             {
                 //Trigger the mouse down output in the JS Bridge
                 jsBridge.GetNodeDrag();
-
-                //rolling ball alg
-                Vector3 lMousePosition = Input.mousePosition;
-
-                Vector3 dr = lMousePosition - myMouseStartWorldPosition;
-
-                Vector3 _n = new Vector3(-dr.y, dr.x, 0);
-
-                _n = _n.normalized;
-
-                this.transform.RotateAround(this.transform.position, _n, -dr.magnitude / radius);
-
-                myMouseStartWorldPosition = lMousePosition;
             }
             else if (Input.GetMouseButton(1))
             {
                 //Trigger the mouse down output in the JS Bridge
                 jsBridge.GetNodeDrag();
-
-                var mousePos = Input.mousePosition;
-                mousePos.z = 10;
-
-                Vector3 lMousePosition = myMainCamera.ScreenToWorldPoint(mousePos);
-
-                Debug.Log(lMousePosition);
-
-                this.transform.position = new Vector3(lMousePosition.x, lMousePosition.y, this.transform.position.z);
             }
         }
     }

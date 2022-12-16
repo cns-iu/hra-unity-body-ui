@@ -3,7 +3,7 @@
 mergeInto(LibraryManager.library, {
 
    SendEvent: function (id, eventName, payload){
-      Console.log("Data has been updated");
+      console.log("Data has been updated");
 
       const _id=UTF8ToString(id);
       const registry = window.UNITY_BODY_UI_REGISTRY || {};
