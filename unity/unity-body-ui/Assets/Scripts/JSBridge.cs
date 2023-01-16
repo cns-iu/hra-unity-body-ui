@@ -12,12 +12,6 @@ public class JSBridge : MonoBehaviour
 
     private string id = "placeHolder";
 
-    [SerializeField] private NodeArray nodeArray;
-
-    public TextMeshProUGUI textbox;
-
-    [SerializeField] private SceneConfiguration sceneConfiguration;
-
     //Initial Setter\\
     public void SetInstance(string _id)
     {
@@ -26,48 +20,7 @@ public class JSBridge : MonoBehaviour
         //since this needs to be called first, output the initialization
         GetInitialized();
     }
-
-    private async void Start()
-    {
-        Debug.Log("Why no work");
-        nodeArray = await Get("https://ccf-api.hubmapconsortium.org/v1/scene");
-        textbox.text = nodeArray.nodes.Length.ToString();
-    }
-
-
-    public async Task<NodeArray> Get(string url)
-    {
-        try
-        {
-            using var www = UnityWebRequest.Get(url);
-            var operation = www.SendWebRequest();
-
-            while (!operation.isDone)
-                await Task.Yield();
-
-            if (www.result != UnityWebRequest.Result.Success)
-                Debug.LogError($"Failed: {www.error}");
-
-            var result = www.downloadHandler.text;
-
-            var text = www.downloadHandler.text
-           .Replace("@id", "jsonLdId")
-           .Replace("@type", "jsonLdType")
-           .Replace("\"object\":", "\"glbObject\":");
-
-            NodeArray _nodeArray = JsonUtility.FromJson<NodeArray>(
-                "{ \"nodes\":" +
-                text
-                + "}"
-                );
-            return _nodeArray;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"{nameof(Get)} failed: {ex.Message}");
-            return default;
-        }
-    }
+    
 
     //Inputs\\
     public void SetRotationx(string rotationString)
@@ -322,5 +275,4 @@ public class JSBridge : MonoBehaviour
         public string id;
         public string file;
     }
-
 }
