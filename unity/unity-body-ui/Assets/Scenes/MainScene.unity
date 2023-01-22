@@ -306,7 +306,10 @@ MonoBehaviour:
   jsBridge: {fileID: 579961881}
   sceneManager: {fileID: 163866421}
   myMainCamera: {fileID: 963194227}
-  radius: 1
+  rotationSpeed: 5
+  smoothFactor: 1
+  _camOffset: {x: 0, y: 0, z: 0}
+  radius: 0.2
 --- !u!65 &440745342
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -378,7 +381,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 440745340}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.1, y: 0.08, z: 5.44}
+  m_LocalPosition: {x: 0, y: 0, z: 5.44}
   m_LocalScale: {x: 1.2, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -935,7 +938,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843254467}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52a6f4a0b80635943954a91265a78bb1, type: 3}
   m_Name: 
