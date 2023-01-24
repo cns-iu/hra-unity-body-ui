@@ -19,6 +19,9 @@ public class OrganControlScript : MonoBehaviour
     [Header("Rotation smoothness")]
     public float smoothFactor = 1;
 
+    [Header("Translate speed")]
+    public float camSpeed = 1;
+
     [Header("CamOffset")]
     public Vector3 _camOffset;
 
@@ -35,12 +38,27 @@ public class OrganControlScript : MonoBehaviour
     private bool isRotating = false;
     private bool isTranslating = false;
 
+    private Quaternion _initRotation;
+    private Vector3 _initPosition;
 
-        //Mouse Enter and Exit Triggers\\
+    private void Start()
+    {
+        _initRotation = transform.rotation;
+        _initPosition = transform.position;
+    }
+
+    public void Reset()
+    {
+        this.transform.rotation = _initRotation;
+        this.transform.position = _initPosition;
+    }
+
+
+    //Mouse Enter and Exit Triggers\\
     private void OnMouseEnter()
     {
         //Trigger the mouse down output in the JS Bridge
-        jsBridge.GetNodeHoverStart();
+        //jsBridge.GetNodeHoverStart();
 
         hovering = true;
     }
@@ -64,9 +82,11 @@ public class OrganControlScript : MonoBehaviour
                 //Trigger the mouse down output in the JS Bridge
                 //jsBridge.GetNodeClick();
 
-                _camOffset = myMainCamera.transform.position - transform.position;
+                Vector3 lMousePosition = Input.mousePosition;
+                myMouseStartWorldPosition = lMousePosition;
+                myObjectStartPosition = transform.position;
 
-                rotating= true;
+                rotating = true;
             }
             else if (Input.GetMouseButtonDown(1))
             {
@@ -75,48 +95,44 @@ public class OrganControlScript : MonoBehaviour
 
                 translating = true;
             }
+        }
 
-            if (Input.GetMouseButton(0) && rotating)
-            {
-                //Trigger the mouse down output in the JS Bridge
-                //jsBridge.GetNodeDrag();
+        if (Input.GetMouseButton(0) && rotating)
+        {
+            //Trigger the mouse down output in the JS Bridge
+            //jsBridge.GetNodeDrag();
 
-                //rotate the cam around the obj
+            //rotate the cam around the obj
+            Vector3 lMousePosition = Input.mousePosition;
 
+            Vector3 dr = lMousePosition - myMouseStartWorldPosition;
 
-                Quaternion camTurnAngle =
-                    Quaternion.AngleAxis((Input.GetAxis("Mouse X") + Input.GetAxis("Mouse Y")) * rotationSpeed, Vector3.up);
+            Vector3 _n = new Vector3(-dr.y, dr.x, 0);
 
-                _camOffset = camTurnAngle * _camOffset;
+            _n = _n.normalized;
 
-                Vector3 newPos = this.transform.position + _camOffset;
+            this.transform.RotateAround(this.transform.position, _n, -dr.magnitude / radius);
 
-                myMainCamera.transform.position = Vector3.Slerp(myMainCamera.transform.position, newPos, smoothFactor);
+            myMouseStartWorldPosition = lMousePosition;
+        }
+        else if (Input.GetMouseButton(1) && translating)
+        {
+            //Trigger the mouse down output in the JS Bridge
+            //jsBridge.GetNodeDrag();
 
-                myMainCamera.transform.LookAt(this.transform.position);
-            }
-            else if (Input.GetMouseButton(1) && translating)
-            {
-                //Trigger the mouse down output in the JS Bridge
-                //jsBridge.GetNodeDrag();
+            Vector3 newPos = transform.position + Vector3.right * Input.GetAxis("Mouse X");  
 
-                Debug.Log("Here");
+            this.transform.position = Vector3.Slerp(transform.position, newPos, camSpeed);
+        }
 
-                Vector3 newPos = myMainCamera.transform.position + Vector3.right * Input.GetAxis("Mouse X");  
-
-                myMainCamera.transform.position = Vector3.Slerp(myMainCamera.transform.position, newPos, smoothFactor);
-            }
-
-            //reset transition
-            if (Input.GetMouseButtonUp(0))
-            {
-                rotating = false;
-            }
-            if (Input.GetMouseButtonUp(1))
-            {
-                translating = false;
-            }
-            
+        //reset transition
+        if (Input.GetMouseButtonUp(0))
+        {
+            rotating = false;
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            translating = false;
         }
     }
 }
