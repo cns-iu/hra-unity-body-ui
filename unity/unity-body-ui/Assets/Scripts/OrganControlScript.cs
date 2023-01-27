@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,8 +29,13 @@ public class OrganControlScript : MonoBehaviour
     [Header("Rotation Radius")]
     public float radius = 1;
 
+    [Header("Alpha value")]
+    public float alpha = 0.5f;
+
     //private vars
     private Vector3 myObjectStartPosition, myMouseStartWorldPosition;
+
+    [SerializeField] List<Transform> leafChildren;
 
     private bool hovering = false;
     private bool rotating = false;
@@ -45,12 +51,61 @@ public class OrganControlScript : MonoBehaviour
     {
         _initRotation = transform.rotation;
         _initPosition = transform.position;
+
+        FindLeafChildren(this.transform);
+
+        //search through the object and set all opacity
+        foreach (var item in leafChildren)
+        {
+            Renderer renderer = item.GetComponent<MeshRenderer>();
+
+            if (renderer == null) continue;
+            Color updatedColor = renderer.material.color;
+            updatedColor.a = alpha;
+            renderer.material.color = updatedColor;
+
+            Shader standard;
+            standard = Shader.Find("Standard");
+            renderer.material.shader = standard;
+            MaterialExtensions.ToFadeMode(renderer.material);
+        }
     }
 
     public void Reset()
     {
         this.transform.rotation = _initRotation;
         this.transform.position = _initPosition;
+    }
+
+    public void FindLeafChildren(Transform trans)
+    {
+        Transform[] allChildren = trans.GetComponentsInChildren<Transform>();
+        foreach (var child in allChildren) 
+        {
+            if (child.childCount == 0)
+            {
+                Debug.Log(child.gameObject);
+                leafChildren.Add(child);
+            }
+        }
+    }
+
+    public void TurnOff()
+    {
+        SetOrgans(false);
+    }
+
+    public void TurnOn()
+    {
+        SetOrgans(true);
+    }
+
+    public void SetOrgans(bool _bool)
+    {
+        foreach (Transform leaf in leafChildren)
+        {
+            leaf.gameObject.SetActive(_bool);
+        }
     }
 
 
@@ -135,4 +190,7 @@ public class OrganControlScript : MonoBehaviour
             translating = false;
         }
     }
+
+
+
 }
