@@ -9,6 +9,7 @@ public class SceneManager : MonoBehaviour
 
     [Header("Organs")]
     public GameObject organReference;
+    public OrganControlScript organControlScript;
 
     [Header("Camera")]
     public Camera cam;
@@ -56,5 +57,10 @@ public class SceneManager : MonoBehaviour
         {
             Debug.Log("wrong camera type");
         }
+    }
+
+    public void SetOrgan(int i)
+    {
+        organControlScript.IsolateOrgan(i);
     }
 }

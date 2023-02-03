@@ -86,13 +86,23 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "zoom", json);
     }
 
-    public void SetTarget(Vector3 xyz)
+    public void SetTarget(string organString)
     {
+
+        //Vector3 xyz
+
         //set the center of the scene to rotate around
-        
+
         //Set the unity scene with the val
 
         //convert the data to json and output it as an event
+
+        int i = int.Parse(organString);
+
+        sceneManager.SetOrgan(i);
+
+        //output
+        WebGLPluginJS.SendEvent(id, "target", organString);
     }
 
     public void SetBounds(Vector3 xyz)

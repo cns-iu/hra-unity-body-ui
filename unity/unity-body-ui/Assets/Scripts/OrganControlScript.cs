@@ -21,7 +21,7 @@ public class OrganControlScript : MonoBehaviour
     public float smoothFactor = 1;
 
     [Header("Translate speed")]
-    public float camSpeed = 1;
+    public float translateSpeed = 1;
 
     [Header("CamOffset")]
     public Vector3 _camOffset;
@@ -31,6 +31,9 @@ public class OrganControlScript : MonoBehaviour
 
     [Header("Alpha value")]
     public float alpha = 0.5f;
+
+    [Header("Organ List")]
+    public List<GameObject> organList;
 
     //private vars
     private Vector3 myObjectStartPosition, myMouseStartWorldPosition;
@@ -69,6 +72,16 @@ public class OrganControlScript : MonoBehaviour
             renderer.material.shader = standard;
             MaterialExtensions.ToFadeMode(renderer.material);
         }
+    }
+
+    public void IsolateOrgan(int t)
+    {
+        foreach(GameObject organ in organList)
+        {
+            organ.SetActive(false);
+        }
+
+        organList[t].SetActive(true);
     }
 
     public void Reset()
@@ -175,9 +188,9 @@ public class OrganControlScript : MonoBehaviour
             //Trigger the mouse down output in the JS Bridge
             //jsBridge.GetNodeDrag();
 
-            Vector3 newPos = transform.position + Vector3.right * Input.GetAxis("Mouse X");  
+            Vector3 newPos = transform.position + (Vector3.right * Input.GetAxis("Mouse X"));
 
-            this.transform.position = Vector3.Slerp(transform.position, newPos, camSpeed);
+            this.transform.position = Vector3.Lerp(transform.position, newPos, translateSpeed);
         }
 
         //reset transition
