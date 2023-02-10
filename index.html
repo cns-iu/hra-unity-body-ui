@@ -22,8 +22,8 @@
     <div class="orient">
         <span>
             <label class="switch">
-                <input type="checkbox">
-                <span class="slider" onclick="setSomeAttribute('camera', 'orthographic')"></span>
+                <input type="checkbox" id="cameraInput">
+                <span class="slider" onclick="setSomeAttribute('camera', cameraInput.checked ? 'perspective' : 'orthographic'); console.log(event)"></span>
             </label>
         </span>
 
@@ -35,7 +35,7 @@
 
     <div class="orient">
         <span>
-            <h2>Rotation X for Unity</h2>
+            <h2>Rotation X </h2>
 
             <input type="number" step="0.01" name="jsonRotationMessageX" id="rotationXInput"
                 placeholder="Enter rotationX..." />
@@ -43,21 +43,21 @@
         </span>
 
         <span>
-            <h2>Rotation Y for Unity</h2>
+            <h2>Rotation Y </h2>
             <input type="number" step="0.01" name="jsonRotationMessageY" id="rotationYInput" 
             placeholder="Enter rotationY..." />
             <button id="rotationYButton" onclick="setSomeAttribute('rotationy', rotationYInput.value)">Send</button>
         </span>
 
         <span>
-            <h2>Zoom for Unity</h2>
+            <h2>Zoom</h2>
             <input type="number" step="0.01" name="jsonZoomMessage" id="zoomInput" 
             placeholder="Enter zoom..." />
             <button id="zoomButton" onclick="setSomeAttribute('zoom', zoomInput.value)">Send</button>
         </span>
 
         <span>
-            <h2>Organ for Unity</h2>
+            <h2>Organ</h2>
             <input type="number" step="0.01" name="jsonTargetMessage" id="targetInput" 
             placeholder="Enter number between 0-12..." />
             <button id="zoomButton" onclick="setSomeAttribute('target', targetInput.value)">Send</button>

@@ -9,3 +9,7 @@ function logToPage(str){
   const debugLog = document.querySelector('.DebugLog')
   debugLog.innerHTML += `<p>${str}</p>`;
 }
+
+function changeCamType(){
+
+}
