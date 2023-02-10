@@ -5,14 +5,18 @@ using System.Threading.Tasks;
 using UnityEngine.Networking;
 using System;
 using TMPro;
+//using UnityEditor.Experimental.GraphView;
 
 public class SpatialSceneManager : MonoBehaviour
 {
 
     [SerializeField] private NodeArray nodeArray;
 
-
     [SerializeField] private GameObject loaderParent;
+
+    //Variables for tissue blocks
+    public List<GameObject> TissueBlocks;
+    [SerializeField] private GameObject preTissueBlock;
 
     public TextMeshProUGUI textbox;
 
@@ -22,7 +26,9 @@ public class SpatialSceneManager : MonoBehaviour
 
         textbox.text = nodeArray.nodes.Length.ToString();
 
-        await GetOrgans();
+        //await GetOrgans();
+
+        CreateAndPlaceTissueBlocks();
     }
 
     public async Task<NodeArray> Get(string url)
@@ -103,6 +109,51 @@ public class SpatialSceneManager : MonoBehaviour
         //    SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
         //    SetOrganCollider(Organs[i]);
         //}
+    }
+
+
+    void CreateAndPlaceTissueBlocks()
+    {
+        for (int i = 1; i < nodeArray.nodes.Length; i++)
+        {
+            if (nodeArray.nodes[i].scenegraph != null) continue;
+            Matrix4x4 reflected = ReflectZ() * MatrixExtensions.BuildMatrix(nodeArray.nodes[i].transformMatrix);
+            GameObject block = Instantiate(
+                preTissueBlock,
+                reflected.GetPosition(),
+                reflected.rotation
+       );
+            block.transform.localScale = reflected.lossyScale * 2f;
+            SetTissueBlockData(block, nodeArray.nodes[i]);
+            SetCellTypeData(block);
+            TissueBlocks.Add(block);
+        }
+    }
+
+    Matrix4x4 ReflectZ()
+    {
+        var result = new Matrix4x4(
+            new Vector4(1, 0, 0, 0),
+            new Vector4(0, 1, 0, 0),
+            new Vector4(0, 0, -1, 0),
+            new Vector4(0, 0, 0, 1)
+        );
+        return result;
+    }
+
+    void SetTissueBlockData(GameObject obj, SpatialSceneNode node)
+    {
+        TissueBlockData dataComponent = obj.AddComponent<TissueBlockData>();
+        dataComponent.EntityId = node.entityId;
+        dataComponent.Name = node.name;
+        dataComponent.Tooltip = node.tooltip;
+        dataComponent.CcfAnnotations = node.ccf_annotations;
+    }
+
+    void SetCellTypeData(GameObject obj)
+    {
+        obj.AddComponent<CellTypeData>();
+        obj.AddComponent<CellTypeDataFetcher>();
     }
 
     [Serializable]
