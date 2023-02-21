@@ -26,7 +26,7 @@ public class SpatialSceneManager : MonoBehaviour
 
         textbox.text = nodeArray.nodes.Length.ToString();
 
-        //await GetOrgans();
+        await GetOrgans();
 
         CreateAndPlaceTissueBlocks();
     }
@@ -85,7 +85,7 @@ public class SpatialSceneManager : MonoBehaviour
             tasks.Add(t);
         }
 
-        //await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks);
 
         //for (int i = 0; i < tasks.Count; i++)
         //{

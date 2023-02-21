@@ -19,20 +19,21 @@ public class ModelLoader : MonoBehaviour
             name = "Model"
         };
 
-        DownloadFile(url);
+        LoadModel(url);
         await Task.Yield();
         return wrapper;
     }
 
     public async void DownloadFile(string url)
     {
+        Debug.Log(url);
         string path = GetFilePath(url);
-        if (File.Exists(path))
-        {
-            Debug.Log("Found file locally, loading...");
-            LoadModel(path);
-            return;
-        }
+        //if (File.Exists(path))
+        //{
+        //    Debug.Log("Found file locally, loading...");
+        //    LoadModel(path);
+        //    return;
+        //}
 
         await GetFileRequest(url, (UnityWebRequest req) =>
         {
@@ -55,14 +56,31 @@ public class ModelLoader : MonoBehaviour
         return $"{filePath}{filename}";
     }
 
-    void LoadModel(string path)
+    async void LoadModel(string url)
     {
         Debug.Log("Loadign models");
 
         ResetWrapper();
-        GameObject model = null;
+
+
+        var gltf = new GLTFast.GltfImport();
+
+        var success = await gltf.Load(url);
+
+        if(success)
+        {
+            GameObject model = new GameObject("glTF");
+
+            await gltf.InstantiateMainSceneAsync(gameObject.transform);
+
+            model.transform.SetParent(wrapper.transform);
+        }
         //Importer.LoadFromFile(path);
-        model.transform.SetParent(wrapper.transform);
+
+        
+
+
+        
     }
 
     async Task GetFileRequest(string url, Action<UnityWebRequest> callback)
@@ -76,7 +94,7 @@ public class ModelLoader : MonoBehaviour
             while (!operation.isDone)
             {
                 //Use to display process to user if needed
-                Debug.Log(operation.progress);
+                //Debug.Log(operation.progress);
             }
             //move await Task.Yield() into while loop if testing after errors               
             await Task.Yield();
