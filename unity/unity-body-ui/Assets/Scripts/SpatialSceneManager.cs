@@ -71,6 +71,8 @@ public class SpatialSceneManager : MonoBehaviour
         List<GameObject> loaders = new List<GameObject>();
         Dictionary<GameObject, SpatialSceneNode> dict = new Dictionary<GameObject, SpatialSceneNode>();
 
+        textbox.text = "Before models get loaded";
+
         foreach (var node in nodeArray.nodes)
         {
             if (node.scenegraph == null) break;
@@ -85,7 +87,11 @@ public class SpatialSceneManager : MonoBehaviour
             tasks.Add(t);
         }
 
+        textbox.text = "After models get loaded";
+
         await Task.WhenAll(tasks);
+
+        textbox.text = "After tasks get finished";
 
         //for (int i = 0; i < tasks.Count; i++)
         //{
@@ -122,7 +128,7 @@ public class SpatialSceneManager : MonoBehaviour
                 preTissueBlock,
                 reflected.GetPosition(),
                 reflected.rotation
-       );
+            );
             block.transform.localScale = reflected.lossyScale * 2f;
             SetTissueBlockData(block, nodeArray.nodes[i]);
             SetCellTypeData(block);
