@@ -7,6 +7,9 @@ using System.Runtime.InteropServices;
 public class WebGLPluginJS : MonoBehaviour {
 
     [DllImport("__Internal")]
+    public static extern void SendConsoleLog(string str);
+
+    [DllImport("__Internal")]
     public static extern void SendEvent(string _id, string eventName, string jsonP);
 
     [DllImport("__Internal")]

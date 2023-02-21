@@ -58,29 +58,38 @@ public class ModelLoader : MonoBehaviour
 
     async void LoadModel(string url)
     {
-        Debug.Log("Loadign models");
+        WebGLPluginJS.SendConsoleLog("model loading");
 
         ResetWrapper();
 
+        WebGLPluginJS.SendConsoleLog("start");
 
         var gltf = new GLTFast.GltfImport();
 
+        WebGLPluginJS.SendConsoleLog(url);
+
         var success = await gltf.Load(url);
 
-        if(success)
+        WebGLPluginJS.SendConsoleLog("before success");
+
+        if (success)
         {
+            WebGLPluginJS.SendConsoleLog("start of if");
+
             GameObject model = new GameObject("glTF");
+
+            WebGLPluginJS.SendConsoleLog(gameObject.transform.ToString());
 
             await gltf.InstantiateMainSceneAsync(gameObject.transform);
 
+            WebGLPluginJS.SendConsoleLog("glTF component after the await");
+
             model.transform.SetParent(wrapper.transform);
+
+            WebGLPluginJS.SendConsoleLog("end of if");
         }
-        //Importer.LoadFromFile(path);
 
-        
-
-
-        
+        WebGLPluginJS.SendConsoleLog("after if");
     }
 
     async Task GetFileRequest(string url, Action<UnityWebRequest> callback)

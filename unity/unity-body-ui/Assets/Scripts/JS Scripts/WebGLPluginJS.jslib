@@ -2,6 +2,11 @@
 // Creating functions for the Unity
 mergeInto(LibraryManager.library, {
 
+   SendConsoleLog: function (str){
+      const output = UTF8ToString(str);
+      console.log(output)
+   },
+
    SendEvent: function (id, eventName, payload){
       console.log("Data has been updated");
 
