@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-//using Siccity.GLTFUtility;
 using System.Threading.Tasks;
 
 public class ModelLoader : MonoBehaviour
@@ -82,12 +81,11 @@ public class ModelLoader : MonoBehaviour
 
             await gltf.InstantiateMainSceneAsync(gameObject.transform);
 
-            WebGLPluginJS.SendConsoleLog("glTF component after the await");
-
             model.transform.SetParent(wrapper.transform);
 
             WebGLPluginJS.SendConsoleLog("end of if");
         }
+        WebGLPluginJS.SendConsoleLog("glTF component after the await");
 
         WebGLPluginJS.SendConsoleLog("after if");
     }
