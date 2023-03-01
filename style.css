@@ -2,7 +2,7 @@
     position: relative;
     display: inline-block;
     width: 60px;
-    height: 34px;
+    height: 1.5rem;
 }
   
 /* Hide default HTML checkbox */
@@ -28,8 +28,8 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 1rem;
+  width: 1rem;
   left: 4px;
   bottom: 4px;
   background-color: white;
@@ -63,24 +63,55 @@ input:checked + .slider:before {
 .orient {
   display: flex;
   flex-direction: row;
-
   padding: 2em;
+  height: 600px
 }
 
-.DebugLog {
+.DebugLog, .right-DebugLog {
   max-height: 600px;
+  max-width: 30rem;
   overflow: scroll;
   width: 100%;
-
   padding-left: 1rem;
 }
 
 .interactions {
   display: flex;
   flex-direction: column;
+  position: relative;
+  width: 17rem;
+  left: 2rem;
+  overflow: auto;
+  max-height: 20rem;
 }
 
 .blocks {
   display: flex;
   flex-direction: row;
+  align-items: center
+}
+
+p {
+  width: 10rem;
+}
+
+input {
+  width: 3rem;
+}
+
+.checkbox {
+  transform: scale(1.5);
+  width: auto;
+}
+
+.right-panels {
+  width: 30rem;
+}
+
+.right-instance, .right-DebugLog  {
+   height: 50%;
+}
+
+.DebugLog > p {
+  width: 100%;
 }

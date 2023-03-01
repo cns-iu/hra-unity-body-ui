@@ -10,14 +10,22 @@
 </head>
 
 <body>
+    <!-- One window -->
     <div class="orient">
-        <span>
-            <wc-body-ui id="myInstance1"></wc-body-ui>
-        </span>
-        <span class="DebugLog">
-            <p>This is where the debug log goes!</p>
-        </span>
+        <wc-body-ui id="myInstance1"></wc-body-ui>
+        <p class="DebugLog">This is where the debug log goes!</p>
     </div>
+
+    <!-- Two windows -->
+    <!-- <div class="orient">
+        <wc-body-ui id="myInstance1"></wc-body-ui>
+        <div class="right-panels">
+            <div class="right-instance">
+                <wc-body-ui class="right-instance" id="myInstance2"></wc-body-ui>
+            </div>
+            <p class="right-DebugLog">This is where the debug log goes!</p>
+        </div>
+    </div> -->
 
 
     <div class="interactions">
@@ -30,8 +38,8 @@
         </div>
 
         <div class="blocks">
-            <p>Camera interavtivity </p>
-            <input type="checkbox" onclick="setSomeAttribute('interactive', event.target.checked ? 'True' : 'False')" class="interavtive">
+            <p>Camera interactivity </p>
+            <input class="checkbox" type="checkbox" onclick="setSomeAttribute('interactive', event.target.checked ? 'True' : 'False')" class="interavtive">
         </div>
 
         <div class="blocks">

@@ -6,7 +6,7 @@ function setSomeAttribute(key, value) {
 }
 
 function logToPage(str){
-  const debugLog = document.querySelector('.DebugLog')
+  const debugLog = document.querySelector('.DebugLog, .right-DebugLog')
   debugLog.innerHTML += `<p>${str}</p>`;
 }
 
