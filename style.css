@@ -77,18 +77,12 @@ input:checked + .slider:before {
 
 .interactions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
-  width: 17rem;
+  width: 90vw;
   left: 2rem;
   overflow: auto;
   max-height: 20rem;
-}
-
-.blocks {
-  display: flex;
-  flex-direction: row;
-  align-items: center
 }
 
 p {

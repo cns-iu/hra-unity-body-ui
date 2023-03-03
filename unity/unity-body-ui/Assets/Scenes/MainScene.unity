@@ -984,7 +984,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1604,6 +1604,7 @@ MonoBehaviour:
   loaderParent: {fileID: 1753764386}
   TissueBlocks: []
   preTissueBlock: {fileID: 6064068075517140875, guid: d4fafdf9f93651741876d0b558601532, type: 3}
+  Organs: []
   textbox: {fileID: 571175366}
 --- !u!4 &1843254469
 Transform:
