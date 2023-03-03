@@ -57,37 +57,47 @@ public class ModelLoader : MonoBehaviour
 
     async void LoadModel(string url)
     {
-        WebGLPluginJS.SendConsoleLog("model loading");
+        //WebGLPluginJS.SendConsoleLog("model loading");
 
         ResetWrapper();
 
-        WebGLPluginJS.SendConsoleLog("start");
+        //WebGLPluginJS.SendConsoleLog("start");
 
         var gltf = new GLTFast.GltfImport();
 
-        WebGLPluginJS.SendConsoleLog(url);
+        //WebGLPluginJS.SendConsoleLog(url);
 
         var success = await gltf.Load(url);
 
-        WebGLPluginJS.SendConsoleLog("before success");
+        //WebGLPluginJS.SendConsoleLog("before success");
 
         if (success)
         {
-            WebGLPluginJS.SendConsoleLog("start of if");
+            //WebGLPluginJS.SendConsoleLog("start of if");
 
             GameObject model = new GameObject("glTF");
 
-            WebGLPluginJS.SendConsoleLog(gameObject.transform.ToString());
+            //WebGLPluginJS.SendConsoleLog(gameObject.transform.ToString());
 
-            await gltf.InstantiateMainSceneAsync(gameObject.transform);
+            try
+            {
+                await gltf.InstantiateMainSceneAsync(gameObject.transform);
+            }
+            catch(Exception e)
+            {
+                //WebGLPluginJS.SendConsoleLog(e.Message);
+                //WebGLPluginJS.SendConsoleLog(e.StackTrace.ToString());
+            }
+
+
+            //WebGLPluginJS.SendConsoleLog("glTF component after the await");
 
             model.transform.SetParent(wrapper.transform);
 
-            WebGLPluginJS.SendConsoleLog("end of if");
+            //WebGLPluginJS.SendConsoleLog("end of if");
         }
-        WebGLPluginJS.SendConsoleLog("glTF component after the await");
 
-        WebGLPluginJS.SendConsoleLog("after if");
+        //WebGLPluginJS.SendConsoleLog("after if");
     }
 
     async Task GetFileRequest(string url, Action<UnityWebRequest> callback)
