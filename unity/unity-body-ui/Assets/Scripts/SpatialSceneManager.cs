@@ -18,6 +18,9 @@ public class SpatialSceneManager : MonoBehaviour
     public List<GameObject> TissueBlocks;
     [SerializeField] private GameObject preTissueBlock;
 
+
+    public List<GameObject> Organs;
+
     public TextMeshProUGUI textbox;
 
     public async void Start()
@@ -93,28 +96,19 @@ public class SpatialSceneManager : MonoBehaviour
 
         textbox.text = "After tasks get finished";
 
-        //for (int i = 0; i < tasks.Count; i++)
-        //{
-        //    Organs.Add(tasks[i].Result);
-        //    SetOrganData(tasks[i].Result, nodeArray.nodes[i]);
-        //}
+        for (int i = 0; i < tasks.Count; i++)
+        {
+            Organs.Add(tasks[i].Result);
+            SetOrganData(tasks[i].Result, nodeArray.nodes[i]);
+        }
 
-        //for (int i = 0; i < Organs.Count; i++)
-        //{
-        //    //add teleportation anchors and set label
-        //    GameObject anchor = Instantiate(preTeleportationAnchor);
-        //    anchor.SetActive(true);
-        //    anchor.transform.parent = Organs[i].transform;
-
-        //    //add tooltip to teleportation anchor label
-        //    TMP_Text label = anchor.GetComponentInChildren<TMP_Text>();
-        //    label.text = Organs[i].GetComponent<OrganData>().tooltip;
-
-        //    //place organ
-        //    PlaceOrgan(Organs[i], nodeArray.nodes[i]);
-        //    SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
-        //    SetOrganCollider(Organs[i]);
-        //}
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            //place organ
+            PlaceOrgan(Organs[i], nodeArray.nodes[i]);
+            SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
+            //SetOrganCollider(Organs[i]);
+        }
     }
 
 
@@ -134,6 +128,50 @@ public class SpatialSceneManager : MonoBehaviour
             SetCellTypeData(block);
             TissueBlocks.Add(block);
         }
+    }
+
+    void PlaceOrgan(GameObject organ, SpatialSceneNode node) //-1, 1, -1 -> for scale
+    {
+        Matrix4x4 reflected = ReflectZ() * MatrixExtensions.BuildMatrix(node.transformMatrix);
+        organ.transform.position = reflected.GetPosition();
+        organ.transform.rotation = new Quaternion(0f, 0f, 0f, 1f); //hard-coded to avoid bug when running natively on Quest 2
+        organ.transform.localScale = new Vector3(
+            reflected.lossyScale.x,
+            reflected.lossyScale.y,
+            -reflected.lossyScale.z
+        );
+
+    }
+
+    void SetOrganData(GameObject obj, SpatialSceneNode node)
+    {
+        OrganData dataComponent = obj.AddComponent<OrganData>();
+        dataComponent.SceneGraph = node.scenegraph;
+        dataComponent.RepresentationOf = node.representation_of;
+        dataComponent.tooltip = node.tooltip;
+    }
+
+    public static void SetOrganOpacity(GameObject organWrapper, float alpha)
+    {
+        List<Transform> list = new List<Transform>();
+        list = LeavesFinder.FindLeaves(organWrapper.transform.GetChild(0), list);
+
+        foreach (var item in list)
+        {
+            Renderer renderer = item.GetComponent<MeshRenderer>();
+
+            if (renderer == null) continue;
+            Color updatedColor = renderer.material.color;
+            updatedColor.a = alpha;
+            renderer.material.color = updatedColor;
+
+            Shader standard;
+            standard = Shader.Find("Standard");
+            renderer.material.shader = standard;
+            MaterialExtensions.ToFadeMode(renderer.material);
+        }
+
+
     }
 
     Matrix4x4 ReflectZ()
