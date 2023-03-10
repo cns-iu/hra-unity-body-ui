@@ -90,11 +90,7 @@ public class SpatialSceneManager : MonoBehaviour
             tasks.Add(t);
         }
 
-        textbox.text = "After models get loaded";
-
         await Task.WhenAll(tasks);
-
-        textbox.text = "After tasks get finished";
 
         for (int i = 0; i < tasks.Count; i++)
         {
@@ -106,7 +102,7 @@ public class SpatialSceneManager : MonoBehaviour
         {
             //place organ
             PlaceOrgan(Organs[i], nodeArray.nodes[i]);
-            SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
+            //SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
             //SetOrganCollider(Organs[i]);
         }
     }
@@ -154,6 +150,10 @@ public class SpatialSceneManager : MonoBehaviour
     public static void SetOrganOpacity(GameObject organWrapper, float alpha)
     {
         List<Transform> list = new List<Transform>();
+
+        Debug.Log(organWrapper.name);
+        Debug.Log(organWrapper.transform.GetChild(0).name);
+
         list = LeavesFinder.FindLeaves(organWrapper.transform.GetChild(0), list);
 
         foreach (var item in list)
