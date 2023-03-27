@@ -8,9 +8,6 @@ class UnityBodyUI extends HTMLElement {
         super();
         this.innerHTML = this.template;
 
-        
-    
-    
         window.UNITY_BODY_UI_REGISTRY[this.id] = this;
     }
 
