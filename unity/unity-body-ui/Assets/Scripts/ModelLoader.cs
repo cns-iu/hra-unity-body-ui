@@ -18,8 +18,7 @@ public class ModelLoader : MonoBehaviour
             name = "Model"
         };
 
-        LoadModel(url);
-        await Task.Yield();
+        await LoadModel(url);
         return this.gameObject;
     }
 

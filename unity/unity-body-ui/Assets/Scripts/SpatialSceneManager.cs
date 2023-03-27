@@ -91,6 +91,7 @@ public class SpatialSceneManager : MonoBehaviour
         }
 
         await Task.WhenAll(tasks);
+        //await Task.Delay(10000); //Task.Delay input is in milliseconds
 
         for (int i = 0; i < tasks.Count; i++)
         {
@@ -102,7 +103,7 @@ public class SpatialSceneManager : MonoBehaviour
         {
             //place organ
             PlaceOrgan(Organs[i], nodeArray.nodes[i]);
-            //SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
+            SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
             //SetOrganCollider(Organs[i]);
         }
     }
@@ -165,10 +166,11 @@ public class SpatialSceneManager : MonoBehaviour
             updatedColor.a = alpha;
             renderer.material.color = updatedColor;
 
-            Shader standard;
-            standard = Shader.Find("Standard");
-            renderer.material.shader = standard;
-            MaterialExtensions.ToFadeMode(renderer.material);
+            //Shader standard;
+            //standard = Shader.Find("Standard");
+            //standard.BlendMode
+            //renderer.material.shader.blendmode
+            //MaterialExtensions.ToFadeMode(renderer.material);
         }
 
 

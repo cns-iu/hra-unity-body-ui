@@ -32,9 +32,6 @@ public class OrganControlScript : MonoBehaviour
     [Header("Alpha value")]
     public float alpha = 0.5f;
 
-    [Header("Organ List")]
-    public List<GameObject> organList;
-
     //private vars
     private Vector3 myObjectStartPosition, myMouseStartWorldPosition;
 
@@ -72,16 +69,6 @@ public class OrganControlScript : MonoBehaviour
             renderer.material.shader = standard;
             MaterialExtensions.ToFadeMode(renderer.material);
         }
-    }
-
-    public void IsolateOrgan(int t)
-    {
-        foreach(GameObject organ in organList)
-        {
-            organ.SetActive(false);
-        }
-
-        organList[t].SetActive(true);
     }
 
     public void Reset()
@@ -203,7 +190,4 @@ public class OrganControlScript : MonoBehaviour
             translating = false;
         }
     }
-
-
-
 }

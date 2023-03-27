@@ -61,6 +61,6 @@ public class SceneManager : MonoBehaviour
 
     public void SetOrgan(int i)
     {
-        organControlScript.IsolateOrgan(i);
+        //organControlScript.IsolateOrgan(i);
     }
 }
