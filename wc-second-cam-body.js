@@ -64,15 +64,16 @@ class UnityBodyUI2 extends HTMLElement {
         }
         
         //Modify the buildUrl for different path
-        var buildUrl = "buildTesting/Build";
-        var loaderUrl = buildUrl + "/buildTesting.loader.js";
+        //Modify the buildUrl for different path
+        var buildUrl = "build/Build";
+        var loaderUrl = buildUrl + "/build.loader.js";
         var config = {
-            dataUrl: buildUrl + "/buildTesting.data",
-            frameworkUrl: buildUrl + "/buildTesting.framework.js",
-            codeUrl: buildUrl + "/buildTesting.wasm",
+            dataUrl: buildUrl + "/build.data",
+            frameworkUrl: buildUrl + "/build.framework.js",
+            codeUrl: buildUrl + "/build.wasm",
             streamingAssetsUrl: "StreamingAssets",
             companyName: "DefaultCompany",
-            productName: "hra-second-screen-test",
+            productName: "unity-body-ui",
             productVersion: "0.1",
             showBanner: unityShowBanner,
         };
