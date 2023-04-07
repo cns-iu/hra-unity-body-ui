@@ -47,28 +47,32 @@ public class OrganControlScript : MonoBehaviour
     private Quaternion _initRotation;
     private Vector3 _initPosition;
 
+    private GameObject topLevelOrgan;
+
     private void Start()
     {
         _initRotation = transform.rotation;
         _initPosition = transform.position;
 
-        FindLeafChildren(this.transform);
+        topLevelOrgan = transform.root.gameObject;
 
-        //search through the object and set all opacity
-        foreach (var item in leafChildren)
-        {
-            Renderer renderer = item.GetComponent<MeshRenderer>();
+        //FindLeafChildren(this.transform);
 
-            if (renderer == null) continue;
-            Color updatedColor = renderer.material.color;
-            updatedColor.a = alpha;
-            renderer.material.color = updatedColor;
+        ////search through the object and set all opacity
+        //foreach (var item in leafChildren)
+        //{
+        //    Renderer renderer = item.GetComponent<MeshRenderer>();
 
-            Shader standard;
-            standard = Shader.Find("Standard");
-            renderer.material.shader = standard;
-            MaterialExtensions.ToFadeMode(renderer.material);
-        }
+        //    if (renderer == null) continue;
+        //    Color updatedColor = renderer.material.color;
+        //    updatedColor.a = alpha;
+        //    renderer.material.color = updatedColor;
+
+        //    Shader standard;
+        //    standard = Shader.Find("Standard");
+        //    renderer.material.shader = standard;
+        //    MaterialExtensions.ToFadeMode(renderer.material);
+        //}
     }
 
     public void Reset()
@@ -166,7 +170,7 @@ public class OrganControlScript : MonoBehaviour
 
             _n = _n.normalized;
 
-            this.transform.RotateAround(this.transform.position, _n, -dr.magnitude / radius);
+            topLevelOrgan.transform.RotateAround(this.transform.position, _n, -dr.magnitude / radius);
 
             myMouseStartWorldPosition = lMousePosition;
         }
@@ -177,7 +181,7 @@ public class OrganControlScript : MonoBehaviour
 
             Vector3 newPos = transform.position + (Vector3.right * Input.GetAxis("Mouse X"));
 
-            this.transform.position = Vector3.Lerp(transform.position, newPos, translateSpeed);
+            topLevelOrgan.transform.position = Vector3.Lerp(transform.position, newPos, translateSpeed);
         }
 
         //reset transition

@@ -9,6 +9,9 @@ using TMPro;
 
 public class SpatialSceneManager : MonoBehaviour
 {
+    public SpatialSceneManager Instance;
+
+    public static event Action OnOrgansLoaded;
 
     [SerializeField] private NodeArray nodeArray;
 
@@ -18,6 +21,11 @@ public class SpatialSceneManager : MonoBehaviour
     public List<GameObject> TissueBlocks;
     [SerializeField] private GameObject preTissueBlock;
 
+
+    [SerializeField] private DataFetcher dataFetcher;
+
+    public List<string> MaleEntityIds;
+    public List<string> FemaleEntityIds;
 
     public List<GameObject> Organs;
 
@@ -30,6 +38,10 @@ public class SpatialSceneManager : MonoBehaviour
         textbox.text = nodeArray.nodes.Length.ToString();
 
         await GetOrgans();
+
+        OnOrgansLoaded?.Invoke();
+
+        ParentTissueBlocksToOrgans(TissueBlocks, Organs);
 
         CreateAndPlaceTissueBlocks();
     }
@@ -172,19 +184,87 @@ public class SpatialSceneManager : MonoBehaviour
             //renderer.material.shader.blendmode
             //MaterialExtensions.ToFadeMode(renderer.material);
         }
+    }
 
+    async void ParentTissueBlocksToOrgans(List<GameObject> tissueBlocks, List<GameObject> organs)
+    {
+        // Add back to AssignEntityIdsToDonorSexLists if delay bug
+        MaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=male");
+        FemaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=female");
 
+        // assign donor sex to organ
+        await GetOrganSex();
+
+        // assign donor sex to tissue block and parent to organ
+        for (int i = 0; i < TissueBlocks.Count; i++)
+        {
+            TissueBlockData tissueData = TissueBlocks[i].GetComponent<TissueBlockData>();
+            if (MaleEntityIds.Contains(tissueData.EntityId))
+            {
+                tissueData.DonorSex = "Male";
+            }
+            else
+            {
+                tissueData.DonorSex = "Female";
+            }
+
+            for (int j = 0; j < Organs.Count; j++)
+            {
+                OrganData organData = Organs[j].GetComponent<OrganData>();
+
+                foreach (var annotation in tissueData.CcfAnnotations)
+                {
+                    if (organData.RepresentationOf == annotation && organData.DonorSex == tissueData.DonorSex)
+                    {
+                        TissueBlocks[i].transform.parent = Organs[j].transform.GetChild(0).transform;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public async Task<List<string>> GetEntityIdsBySex(string url)
+    {
+        List<string> result = new List<string>();
+        DataFetcher httpClient = dataFetcher;
+        NodeArray nodeArray = await httpClient.Get(url);
+        foreach (var node in nodeArray.nodes)
+        {
+            result.Add(node.jsonLdId);
+        }
+        return result;
+    }
+
+    public async Task GetOrganSex()
+    {
+        DataFetcher httpClient = dataFetcher;
+        NodeArray nodeArray = await httpClient.Get("https://ccf-api.hubmapconsortium.org/v1/reference-organs");
+        // Debug.Log(nodeArray.nodes.Length);
+        foreach (var organ in Organs)
+        {
+            OrganData organData = organ.GetComponent<OrganData>();
+
+            foreach (var node in nodeArray.nodes)
+            {
+                // Debug.Log("file: " + node.reference_organ);
+                if (organData.SceneGraph == node.glbObject.file)
+                {
+                    organData.DonorSex = node.sex;
+                }
+            }
+        }
     }
 
     Matrix4x4 ReflectZ()
     {
-        var result = new Matrix4x4(
-            new Vector4(1, 0, 0, 0),
-            new Vector4(0, 1, 0, 0),
-            new Vector4(0, 0, -1, 0),
-            new Vector4(0, 0, 0, 1)
-        );
-        return result;
+    var result = new Matrix4x4(
+        new Vector4(1, 0, 0, 0),
+        new Vector4(0, 1, 0, 0),
+        new Vector4(0, 0, -1, 0),
+        new Vector4(0, 0, 0, 1)
+    );
+    return result;
     }
 
     void SetTissueBlockData(GameObject obj, SpatialSceneNode node)
@@ -200,47 +280,5 @@ public class SpatialSceneManager : MonoBehaviour
     {
         obj.AddComponent<CellTypeData>();
         obj.AddComponent<CellTypeDataFetcher>();
-    }
-
-    [Serializable]
-    public class NodeArray
-    {
-        [SerializeField] public SpatialSceneNode[] nodes;
-    }
-
-    [Serializable]
-    public class SpatialSceneNode
-    {
-        public string jsonLdId;
-        public string jsonLdType;
-        public string entityId;
-
-        public string[] ccf_annotations;
-        public string representation_of;
-        public string reference_organ;
-        public bool unpickable;
-        public bool wireframe;
-        public bool _lighting;
-        public string scenegraph;
-        public string scenegraphNode;
-        public bool zoomBasedOpacity;
-        public bool zoomToOnLoad;
-        public int[] color;
-        public float opacity;
-        public float[] transformMatrix;
-        public string name;
-        public string tooltip;
-        public float priority;
-
-        public int rui_rank;
-        public GLBObject glbObject; //for reference organs
-        public string sex; //for reference organs
-    }
-
-    [Serializable]
-    public class GLBObject
-    {
-        public string id;
-        public string file;
     }
 }
