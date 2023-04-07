@@ -28,7 +28,8 @@ public class SceneManager : MonoBehaviour
     {
         organReference.transform.Rotate(new Vector3(xRotation, 0, 0));
 
-        jsBridge.GetRotationChange(organReference.transform.rotation.x, organReference.transform.rotation.y);
+        //get local rotation
+        jsBridge.GetRotationChange(xRotation, organReference.transform.rotation.y);
     }
 
     public void SetOrganRotationY(float yRotation)

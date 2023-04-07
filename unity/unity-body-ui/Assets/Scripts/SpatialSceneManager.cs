@@ -176,12 +176,12 @@ public class SpatialSceneManager : MonoBehaviour
             if (renderer == null) continue;
             Color updatedColor = renderer.material.color;
             updatedColor.a = alpha;
+            //Debug.Log(updatedColor);
             renderer.material.color = updatedColor;
 
-            //Shader standard;
+            Shader standard;
             //standard = Shader.Find("Standard");
-            //standard.BlendMode
-            //renderer.material.shader.blendmode
+            //renderer.material.shader = standard;
             //MaterialExtensions.ToFadeMode(renderer.material);
         }
     }

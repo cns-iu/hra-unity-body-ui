@@ -109,3 +109,16 @@ input {
 .DebugLog > p {
   width: 100%;
 }
+.DebugLog {
+  height: 150px;
+}
+
+#myInstance1 canvas {
+  width: 480px;
+  height: 300px;
+}
+
+#myInstance2 canvas {
+  width: 240px;
+  height: 150px;
+}

@@ -100,8 +100,8 @@ class UnityBodyUI extends HTMLElement {
         } else {
             // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-            canvas.style.width = "960px";
-            canvas.style.height = "600px";
+            // canvas.style.width = "960px";
+            // canvas.style.height = "600px";
         }
 
         loadingBar.style.display = "block";
