@@ -12,6 +12,15 @@ public class JSBridge : MonoBehaviour
 
     private string id = "placeHolder";
 
+
+    void Start()
+    {
+        SetRotationx("60");
+        SetRotationy("40");
+    }
+
+
+
     //Initial Setter\\
     public void SetInstance(string _id)
     {
@@ -29,6 +38,7 @@ public class JSBridge : MonoBehaviour
         float rotationX = float.Parse(rotationString);
 
         //Set the unity scene with the val
+        Debug.Log(rotationX);
         sceneManager.SetOrganRotationX(rotationX);
 
         //send the change in rotationX as an event
@@ -49,6 +59,7 @@ public class JSBridge : MonoBehaviour
         //attribute change callback is going to throw a string
         float rotationY = float.Parse(rotationString);
 
+        Debug.Log(rotationY);
         //Set the unity scene with the val
         sceneManager.SetOrganRotationY(rotationY);
 

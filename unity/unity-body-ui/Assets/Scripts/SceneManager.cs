@@ -26,17 +26,35 @@ public class SceneManager : MonoBehaviour
 
     public void SetOrganRotationX(float xRotation)
     {
-        organReference.transform.Rotate(new Vector3(xRotation, 0, 0));
+        float yRot = organReference.transform.eulerAngles.y;
+        float zRot = organReference.transform.eulerAngles.z;
+
+        Vector3 newRotation = new Vector3(xRotation, yRot, zRot);
+
+        organReference.transform.eulerAngles = newRotation;
+
+        //organReference.transform.Rotate(new Vector3(xRotation, 0, 0));
 
         //get local rotation
         jsBridge.GetRotationChange(xRotation, organReference.transform.rotation.y);
+        Debug.Log(organReference.transform.rotation.x + " " + organReference.transform.rotation.y);
     }
 
     public void SetOrganRotationY(float yRotation)
     {
-        organReference.transform.Rotate(new Vector3(0, yRotation, 0));
+        float xRot = organReference.transform.eulerAngles.x;
+        float zRot = organReference.transform.eulerAngles.z;
+
+
+        Vector3 newRotation = new Vector3(xRot, yRotation, zRot);
+
+        organReference.transform.eulerAngles = newRotation;
+
+        //organReference.transform.Rotate(new Vector3(0, yRotation, 0));
 
         jsBridge.GetRotationChange(organReference.transform.rotation.x, organReference.transform.rotation.y);
+
+        Debug.Log(organReference.transform.eulerAngles.x + " " + organReference.transform.eulerAngles.y);
     }
 
     public void SetCameraZoom(float zoom)
