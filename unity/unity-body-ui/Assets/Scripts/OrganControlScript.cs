@@ -15,13 +15,13 @@ public class OrganControlScript : MonoBehaviour
     public Camera myMainCamera;
 
     [Header("Rotation Speed")]
-    public float rotationSpeed = 1;
+    public float rotationSpeed = 0.3f;
 
     [Header("Rotation smoothness")]
     public float smoothFactor = 1;
 
     [Header("Translate speed")]
-    public float translateSpeed = 1;
+    public float translateSpeed = 0.05f;
 
     [Header("CamOffset")]
     public Vector3 _camOffset;
@@ -173,15 +173,17 @@ public class OrganControlScript : MonoBehaviour
             topLevelOrgan.transform.RotateAround(this.transform.position, _n, -dr.magnitude / radius);
 
             myMouseStartWorldPosition = lMousePosition;
+
+            topLevelOrgan.transform.position = Vector3.zero;
         }
         else if (Input.GetMouseButton(1) && translating)
         {
             //Trigger the mouse down output in the JS Bridge
             //jsBridge.GetNodeDrag();
 
-            Vector3 newPos = transform.position + (Vector3.right * Input.GetAxis("Mouse X"));
+            Vector3 newPos = topLevelOrgan.transform.position + (Vector3.right * Input.GetAxis("Mouse X"));
 
-            topLevelOrgan.transform.position = Vector3.Lerp(transform.position, newPos, translateSpeed);
+            topLevelOrgan.transform.position = Vector3.Lerp(topLevelOrgan.transform.position, newPos, translateSpeed);
         }
 
         //reset transition

@@ -13,14 +13,6 @@ public class JSBridge : MonoBehaviour
     private string id = "placeHolder";
 
 
-    void Start()
-    {
-        SetRotationx("60");
-        SetRotationy("40");
-    }
-
-
-
     //Initial Setter\\
     public void SetInstance(string _id)
     {
