@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 163866420}
   - component: {fileID: 163866421}
   m_Layer: 0
-  m_Name: SceneManager
+  m_Name: SceneSetter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -307,6 +307,8 @@ MonoBehaviour:
   organControlScript: {fileID: 0}
   cam: {fileID: 963194227}
   interactivity: 1
+  spatialSceneManager: {fileID: 0}
+  sceneSet: 0
 --- !u!1 &174664918
 GameObject:
   m_ObjectHideFlags: 0

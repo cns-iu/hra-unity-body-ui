@@ -13,6 +13,19 @@ function setupListeners() {
   const bodyUi = document.getElementById('myInstance1');
   const bodyUi2 = document.getElementById('myInstance2');
 
+  bodyUi.addEventListener('initialized', (event) => {
+    logToPage('bodyui1', event);
+    getScene(SCENE.default).then((scene) => {
+      bodyUi.setAttribute('scene', scene);
+    });
+  });
+  bodyUi2.addEventListener('initialized', (event) => {
+    logToPage('bodyui2', event);
+    getScene(SCENE.default).then((scene) => {
+      bodyUi2.setAttribute('scene', scene);
+    });
+  });
+
   for (const attribute of UnityBodyUI.observedAttributes) {
     // skip interactive?
     bodyUi.addEventListener(attribute + 'Change', (event) => {
@@ -30,9 +43,20 @@ function setupListeners() {
   });
 }
 
+const SCENE = {
+  'default': 'https://ccf-api.hubmapconsortium.org/v1/scene?sex=both',
+  'male': 'https://ccf-api.hubmapconsortium.org/v1/scene?sex=male',
+  'female': 'https://ccf-api.hubmapconsortium.org/v1/scene?sex=female',
+  'vhfleftkidney': 'https://ccf-api.hubmapconsortium.org/v1/reference-organ-scene?organ-iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0004538&sex=female'
+}
+
+function getScene(url) {
+  return fetch(url).then(r => r.json());
+}
+
 function logToPage(str){
   const debugLog = document.querySelector('.DebugLog, .right-DebugLog')
-  debugLog.innerHTML += `<p>${str}</p>`;
+  debugLog.innerHTML = `${str}</br>` + debugLog.innerHTML;
 }
 
 function changeCamType(){

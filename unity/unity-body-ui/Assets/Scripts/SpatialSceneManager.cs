@@ -31,9 +31,14 @@ public class SpatialSceneManager : MonoBehaviour
 
     public TextMeshProUGUI textbox;
 
-    public async void Start()
+    private void Start()
     {
-        nodeArray = await Get("https://ccf-api.hubmapconsortium.org/v1/scene");
+        //SetScene("https://ccf-api.hubmapconsortium.org/v1/scene?sex=male");
+    }
+
+    public async void SetScene(NodeArray _nodeArray)
+    {
+        nodeArray = _nodeArray;
 
         textbox.text = nodeArray.nodes.Length.ToString();
 
@@ -45,6 +50,16 @@ public class SpatialSceneManager : MonoBehaviour
 
         CreateAndPlaceTissueBlocks();
     }
+
+    /// <summary>
+    /// Load scene after it has been set initially
+    /// </summary>
+    /// <param name="_apiCall"></param>
+    public async void ChangeScene(NodeArray nodeArray)
+    {
+
+    }
+
 
     public async Task<NodeArray> Get(string url)
     {

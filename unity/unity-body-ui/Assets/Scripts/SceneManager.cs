@@ -17,6 +17,10 @@ public class SceneManager : MonoBehaviour
     [Header("Interactivity")]
     public bool interactivity = true;
 
+    [Header("Scene varaibles")]
+    public SpatialSceneManager spatialSceneManager;
+    public bool sceneSet = false;
+
 
 
     public void SetCameraInteractivity(bool interacive)
@@ -52,7 +56,7 @@ public class SceneManager : MonoBehaviour
 
         //organReference.transform.Rotate(new Vector3(0, yRotation, 0));
 
-        jsBridge.GetRotationChange(organReference.transform.rotation.x, organReference.transform.rotation.y);
+        jsBridge.GetRotationChange(organReference.transform.rotation.x, yRotation);
 
         Debug.Log(organReference.transform.eulerAngles.x + " " + organReference.transform.eulerAngles.y);
     }
@@ -78,8 +82,19 @@ public class SceneManager : MonoBehaviour
         }
     }
 
-    public void SetOrgan(int i)
+    public void LoadScene(NodeArray nodeArray)
     {
-        //organControlScript.IsolateOrgan(i);
+        if (sceneSet)
+        {
+
+
+
+            spatialSceneManager.ChangeScene(nodeArray);
+        }
+        else
+        {
+            spatialSceneManager.SetScene(nodeArray);
+            sceneSet = true;
+        }
     }
 }

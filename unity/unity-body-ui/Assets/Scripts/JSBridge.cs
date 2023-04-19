@@ -10,10 +10,17 @@ public class JSBridge : MonoBehaviour
 {
     [SerializeField] private SceneManager sceneManager;
 
-    private string id = "placeHolder";
+    private string id = "";
+
 
 
     //Initial Setter\\
+
+    /// <summary>
+    /// First function that gets called by the web component
+    /// Sets the string ID so when the other variables get output they have the right name
+    /// </summary>
+    /// <param name="_id"></param>
     public void SetInstance(string _id)
     {
         id = _id;
@@ -21,9 +28,33 @@ public class JSBridge : MonoBehaviour
         //since this needs to be called first, output the initialization
         GetInitialized();
     }
-    
+
+
+
+    //Scene Setter\\
+
+    /// <summary>
+    /// Set the scene by taking in a node array and either loading in all the assets or
+    /// modifying the current scene to match the nodeArrayString
+    /// </summary>
+    /// <param name="nodeArrayString"></param>
+    public void SetScene(string nodeArrayString)
+    {
+        //turn the json into a node array
+        NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(nodeArrayString);
+
+        //send the data off to the scene
+        sceneManager.LoadScene(nodeArray);
+    }
+
+
 
     //Inputs\\
+    
+    /// <summary>
+    /// Set the rotation for the X axis
+    /// </summary>
+    /// <param name="rotationString"></param>
     public void SetRotationx(string rotationString)
     {
         //attribute change callback is going to throw a string
@@ -46,6 +77,10 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "rotationX", json);
     }
 
+    /// <summary>
+    /// Set the rotation for the Y axis
+    /// </summary>
+    /// <param name="rotationString"></param>
     public void SetRotationy(string rotationString)
     {
         //attribute change callback is going to throw a string
@@ -68,6 +103,10 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "rotation", json);
     }
 
+    /// <summary>
+    /// Set the zoom for the camera
+    /// </summary>
+    /// <param name="zoomString"></param>
     public void SetZoom(string zoomString)
     {
         //attribute change callback is going to throw a string
@@ -89,6 +128,11 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "zoom", json);
     }
 
+    /// <summary>
+    /// NOT IMPLEMENTED
+    /// should recenter the root gameobject for the organs
+    /// </summary>
+    /// <param name="organString"></param>
     public void SetTarget(string organString)
     {
 
@@ -102,12 +146,17 @@ public class JSBridge : MonoBehaviour
 
         int i = int.Parse(organString);
 
-        sceneManager.SetOrgan(i);
+        //sceneManager.SetOrgan();
 
         //output
         WebGLPluginJS.SendEvent(id, "target", organString);
     }
 
+    /// <summary>
+    /// NOT IMPLEMENTED
+    /// Set the bounds of the camera
+    /// </summary>
+    /// <param name="xyz"></param>
     public void SetBounds(Vector3 xyz)
     {
         //set the perspective bounds of the camera
@@ -117,6 +166,10 @@ public class JSBridge : MonoBehaviour
         //convert the data to json and output it as an event
     }
 
+    /// <summary>
+    /// Set the camera type based off the name of the string input
+    /// </summary>
+    /// <param name="camera"></param>
     public void SetCamera(string camera)
     {
         //Set the unity scene with the val
@@ -135,6 +188,10 @@ public class JSBridge : MonoBehaviour
         WebGLPluginJS.SendEvent(id, "camera", json);
     }
 
+    /// <summary>
+    /// Set whether the screen is interactable or not
+    /// </summary>
+    /// <param name="interactivityString"></param>
     public void SetInteractive(string interactivityString)
     {
         bool interactive = Convert.ToBoolean(interactivityString);
@@ -157,54 +214,96 @@ public class JSBridge : MonoBehaviour
 
 
                     //Outputs\\
+
+    /// <summary>
+    /// Output to JS that Unity initialized
+    /// </summary>
     public void GetInitialized()
     {
+        //Send the string initialized to the WebGL pluggin
         WebGLPluginJS.SendOutput(id, "initialized", null);
     }
 
-
+    /// <summary>
+    /// Output the Rotation of the organ to JS
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
     public void GetRotationChange(float x, float y)
     {
+        //Create a new rotation object
         Rotation rot = new Rotation();
+
+        //Set the new rotation for the rotation obj
         rot.rotationX = x;
         rot.rotationY = y;
+
+        //Convert the obj to a jason
         string json = JsonUtility.ToJson(rot);
+
+        //Output to the webgl script
         WebGLPluginJS.SendOutput(id, "rotationChange", json);
     }
 
+    /// <summary>
+    /// Output that the organ is being dragged by the user
+    /// </summary>
     public void GetNodeDrag()
     {
+        //Create a new node drag event
         NodeDragEvent node = new NodeDragEvent();
 
+        //convert the obj to a json string
         string json = JsonUtility.ToJson(node);
 
+        //output the node drag event to the webgl script
         WebGLPluginJS.SendOutput(id, "nodeDrag", json);
     }
 
+    /// <summary>
+    /// Output that the organ got clicked
+    /// </summary>
     public void GetNodeClick()
     {
+        //create a node click event
         NodeClickEvent node = new NodeClickEvent();
 
+        //convert the obj to a json string
         string json = JsonUtility.ToJson(node);
 
+        //output the node click event to the webgl script
         WebGLPluginJS.SendOutput(id, "nodeClick", json);
     }
 
+    /// <summary>
+    /// NOT IMPLEMENTED
+    /// Output when the user starts hovering over the organ
+    /// </summary>
     public void GetNodeHoverStart()
     {
+        // Need to pass in the spatial scene node data
         SpatialSceneNode node = new SpatialSceneNode();
 
+        //conver it to a json string
         string json = JsonUtility.ToJson(node);
 
+        //output the data to the webgl script
         //WebGLPluginJS.SendOutput(id, "nodeHoverStart", json);
     }
 
+    /// <summary>
+    /// NOT IMPLEMENTED
+    /// Output when teh user stops hovering over the organ
+    /// </summary>
     public void GetNodeHoverStop()
     {
+        // Need to pass in the actual spatial scene node
         SpatialSceneNode node = new SpatialSceneNode();
 
+        //convert to json
         string json = JsonUtility.ToJson(node);
 
+        //output the data to the webgl script
         WebGLPluginJS.SendOutput(id, "nodeHoverStop", json);
     }
 
@@ -245,41 +344,6 @@ public class JSBridge : MonoBehaviour
     public class NodeClickEvent
     {
         
-    }
-
-    [Serializable]
-    public class NodeArray
-    {
-        [SerializeField] public SpatialSceneNode[] nodes;
-    }
-
-    [Serializable]
-    public class SpatialSceneNode
-    {
-        public string jsonLdId;
-        public string jsonLdType;
-        public string entityId;
-
-        public string[] ccf_annotations;
-        public string representation_of;
-        public string reference_organ;
-        public bool unpickable;
-        public bool wireframe;
-        public bool _lighting;
-        public string scenegraph;
-        public string scenegraphNode;
-        public bool zoomBasedOpacity;
-        public bool zoomToOnLoad;
-        public int[] color;
-        public float opacity;
-        public float[] transformMatrix;
-        public string name;
-        public string tooltip;
-        public float priority;
-
-        public int rui_rank;
-        public GLBObject glbObject; //for reference organs
-        public string sex; //for reference organs
     }
 
     [Serializable]
