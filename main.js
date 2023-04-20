@@ -59,8 +59,4 @@ function logToPage(str){
   debugLog.innerHTML = `${str}</br>` + debugLog.innerHTML;
 }
 
-function changeCamType(){
-
-}
-
 document.addEventListener("DOMContentLoaded", setupListeners);
