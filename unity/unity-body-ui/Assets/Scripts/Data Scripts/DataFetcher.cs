@@ -48,6 +48,8 @@ public class DataFetcher : MonoBehaviour
     }
 }
 
+
+//Json Funcs\\
 [Serializable]
 public class NodeArray
 {
@@ -88,4 +90,41 @@ public class GLBObject
 {
     public string id;
     public string file;
+}
+
+[Serializable]
+public class JsonNum
+{
+    public float num;
+}
+
+[Serializable]
+public class JsonString
+{
+    public string str;
+}
+
+[Serializable]
+public class JsonBool
+{
+    public bool boolean;
+}
+
+[Serializable]
+public class Rotation
+{
+    public float rotationX;
+    public float rotationY;
+}
+
+[Serializable]
+public class NodeDragEvent
+{
+
+}
+
+[Serializable]
+public class NodeClickEvent
+{
+
 }

@@ -9,7 +9,7 @@ public class OrganControlScript : MonoBehaviour
     public JSBridge jsBridge;
 
     [Header("Scene Manager")]
-    public SceneManager sceneManager;
+    public SceneSetter sceneSetter;
 
     [Header("Camera Reference")]
     public Camera myMainCamera;
@@ -55,24 +55,6 @@ public class OrganControlScript : MonoBehaviour
         _initPosition = transform.position;
 
         topLevelOrgan = transform.root.gameObject;
-
-        //FindLeafChildren(this.transform);
-
-        ////search through the object and set all opacity
-        //foreach (var item in leafChildren)
-        //{
-        //    Renderer renderer = item.GetComponent<MeshRenderer>();
-
-        //    if (renderer == null) continue;
-        //    Color updatedColor = renderer.material.color;
-        //    updatedColor.a = alpha;
-        //    renderer.material.color = updatedColor;
-
-        //    Shader standard;
-        //    standard = Shader.Find("Standard");
-        //    renderer.material.shader = standard;
-        //    MaterialExtensions.ToFadeMode(renderer.material);
-        //}
     }
 
     public void Reset()
@@ -81,43 +63,11 @@ public class OrganControlScript : MonoBehaviour
         this.transform.position = _initPosition;
     }
 
-    public void FindLeafChildren(Transform trans)
-    {
-        Transform[] allChildren = trans.GetComponentsInChildren<Transform>();
-        foreach (var child in allChildren) 
-        {
-            if (child.childCount == 0)
-            {
-                Debug.Log(child.gameObject);
-                leafChildren.Add(child);
-            }
-        }
-    }
-
-    public void TurnOff()
-    {
-        SetOrgans(false);
-    }
-
-    public void TurnOn()
-    {
-        SetOrgans(true);
-    }
-
-    public void SetOrgans(bool _bool)
-    {
-        foreach (Transform leaf in leafChildren)
-        {
-            leaf.gameObject.SetActive(_bool);
-        }
-    }
-
-
     //Mouse Enter and Exit Triggers\\
     private void OnMouseEnter()
     {
         //Trigger the mouse down output in the JS Bridge
-        //jsBridge.GetNodeHoverStart();
+        jsBridge.GetNodeHoverStart();
 
         hovering = true;
     }
@@ -125,7 +75,7 @@ public class OrganControlScript : MonoBehaviour
     private void OnMouseExit()
     {
         //Trigger the mouse down output in the JS Bridge
-        //jsBridge.GetNodeHoverStop();
+        jsBridge.GetNodeHoverStop();
 
         hovering = false;
     }
@@ -139,7 +89,7 @@ public class OrganControlScript : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 //Trigger the mouse down output in the JS Bridge
-                //jsBridge.GetNodeClick();
+                jsBridge.GetNodeClick();
 
                 Vector3 lMousePosition = Input.mousePosition;
                 myMouseStartWorldPosition = lMousePosition;
@@ -150,7 +100,7 @@ public class OrganControlScript : MonoBehaviour
             else if (Input.GetMouseButtonDown(1))
             {
                 //Trigger the mouse down output in the JS Bridge
-                //jsBridge.GetNodeClick();
+                jsBridge.GetNodeClick();
 
                 translating = true;
             }
@@ -159,7 +109,7 @@ public class OrganControlScript : MonoBehaviour
         if (Input.GetMouseButton(0) && rotating)
         {
             //Trigger the mouse down output in the JS Bridge
-            //jsBridge.GetNodeDrag();
+            jsBridge.GetNodeDrag();
 
             //rotate the cam around the obj
             Vector3 lMousePosition = Input.mousePosition;
@@ -179,7 +129,7 @@ public class OrganControlScript : MonoBehaviour
         else if (Input.GetMouseButton(1) && translating)
         {
             //Trigger the mouse down output in the JS Bridge
-            //jsBridge.GetNodeDrag();
+            jsBridge.GetNodeDrag();
 
             Vector3 newPos = topLevelOrgan.transform.position + (Vector3.right * Input.GetAxis("Mouse X"));
 

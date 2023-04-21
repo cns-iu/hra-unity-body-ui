@@ -7,6 +7,8 @@ public class ColliderTest : MonoBehaviour
 {
     [SerializeField] private SpatialSceneManager sceneBuilder;
 
+    [SerializeField] private JSBridge jsBridge;
+
     private void OnEnable()
     {
         SpatialSceneManager.OnOrgansLoaded += () =>
@@ -57,9 +59,8 @@ public class ColliderTest : MonoBehaviour
 
         }
 
+        //add the box collider to the child
         var boxCol = wrapper.transform.GetChild(0).AddComponent<BoxCollider>();
-
-        boxCol.AddComponent<OrganControlScript>();
 
         boxCol.center = bounds.center - wrapper.transform.position;
         boxCol.size = bounds.size;
@@ -68,5 +69,12 @@ public class ColliderTest : MonoBehaviour
         wrapper.transform.localPosition = pos;
         wrapper.transform.localRotation = rot;
         wrapper.transform.localScale = scale;
+
+
+        //attach the organ control script
+        boxCol.AddComponent<OrganControlScript>();
+
+        //pass the reference to the js bridge
+        boxCol.GetComponent<OrganControlScript>().jsBridge = jsBridge;
     }
 }

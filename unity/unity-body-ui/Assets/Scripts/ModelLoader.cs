@@ -22,14 +22,6 @@ public class ModelLoader : MonoBehaviour
         return this.gameObject;
     }
 
-    string GetFilePath(string url)
-    {
-        string[] pieces = url.Split('/');
-        string filename = pieces[pieces.Length - 1];
-
-        return $"{filePath}{filename}";
-    }
-
     async Task LoadModel(string path)
     {
         ResetWrapper();
@@ -45,26 +37,6 @@ public class ModelLoader : MonoBehaviour
             await gltf.InstantiateMainSceneAsync(gameObject.transform);
 
             model.transform.SetParent(wrapper.transform);
-        }
-    }
-
-    async Task GetFileRequest(string url, Action<UnityWebRequest> callback)
-    {
-        using (UnityWebRequest req = UnityWebRequest.Get(url))
-        {
-            req.downloadHandler = new DownloadHandlerFile(GetFilePath(url));
-
-            var operation = req.SendWebRequest();
-
-            while (!operation.isDone)
-            {
-                //Use to display process to user if needed
-                //Debug.Log(operation.progress);
-            }
-            //move await Task.Yield() into while loop if testing after errors               
-            await Task.Yield();
-
-            callback(req);
         }
     }
 

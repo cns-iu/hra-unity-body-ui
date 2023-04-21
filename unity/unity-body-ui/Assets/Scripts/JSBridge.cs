@@ -1,14 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
 
 public class JSBridge : MonoBehaviour
 {
-    [SerializeField] private SceneManager sceneManager;
+    [SerializeField] private SceneSetter sceneSetter;
 
     private string id = "";
 
@@ -44,7 +44,7 @@ public class JSBridge : MonoBehaviour
         NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(nodeArrayString);
 
         //send the data off to the scene
-        sceneManager.LoadScene(nodeArray);
+        sceneSetter.LoadScene(nodeArray);
     }
 
 
@@ -62,7 +62,7 @@ public class JSBridge : MonoBehaviour
 
         //Set the unity scene with the val
         Debug.Log(rotationX);
-        sceneManager.SetOrganRotationX(rotationX);
+        sceneSetter.SetOrganRotationX(rotationX);
 
         //send the change in rotationX as an event
         JsonNum rot = new JsonNum();
@@ -88,7 +88,7 @@ public class JSBridge : MonoBehaviour
 
         Debug.Log(rotationY);
         //Set the unity scene with the val
-        sceneManager.SetOrganRotationY(rotationY);
+        sceneSetter.SetOrganRotationY(rotationY);
 
         //send the change in rotationX as an event
         JsonNum rot = new JsonNum();
@@ -113,7 +113,7 @@ public class JSBridge : MonoBehaviour
         float zoom = float.Parse(zoomString);
 
         //Set the unity scene with the val
-        sceneManager.SetCameraZoom(zoom);
+        sceneSetter.SetCameraZoom(zoom);
 
         //convert the data to json and output it as an event
         JsonNum zNum = new JsonNum();
@@ -173,7 +173,7 @@ public class JSBridge : MonoBehaviour
     public void SetCamera(string camera)
     {
         //Set the unity scene with the val
-        sceneManager.SetCameraType(camera);
+        sceneSetter.SetCameraType(camera);
 
         //convert the data to json and output it as an event
         JsonString cam = new JsonString();
@@ -197,7 +197,7 @@ public class JSBridge : MonoBehaviour
         bool interactive = Convert.ToBoolean(interactivityString);
 
         //Set the unity scene with the val
-        sceneManager.SetCameraInteractivity(interactive);
+        sceneSetter.SetCameraInteractivity(interactive);
 
         //convert the data to json and output it as an event
         JsonBool interactivity = new JsonBool();
@@ -305,51 +305,5 @@ public class JSBridge : MonoBehaviour
 
         //output the data to the webgl script
         WebGLPluginJS.SendOutput(id, "nodeHoverStop", json);
-    }
-
-
-    //Json Funcs\\
-    [Serializable]
-    public class JsonNum
-    {
-        public float num;
-    }
-
-    [Serializable]
-    public class JsonString
-    {
-        public string str;
-    }
-
-    [Serializable]
-    public class JsonBool
-    {
-        public bool boolean;
-    }
-
-    [Serializable]
-    public class Rotation
-    {
-        public float rotationX;
-        public float rotationY;
-    }
-
-    [Serializable]
-    public class NodeDragEvent
-    {
-
-    }
-
-    [Serializable]
-    public class NodeClickEvent
-    {
-        
-    }
-
-    [Serializable]
-    public class GLBObject
-    {
-        public string id;
-        public string file;
     }
 }
