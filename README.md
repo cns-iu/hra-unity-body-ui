@@ -95,6 +95,7 @@ Unity Functions:
 
     [Top Level Scripts]
     JSBridge.cs:
+        * contains all the event functions for recievin and sending data (need to finish)
 
     SceneSetter.cs:
         * SetCameraInteractivity(bool interacive) - set whether the camera cna be interacted with or not
@@ -105,8 +106,12 @@ Unity Functions:
         * LoadScene(NodeArray nodeArray) - Loads the scene based off the given node array. Passes the data off to the Spatial scene manager either as a call to set scene if nothing has been set or as load scene if it has already been initialized
 
     ColldierTest.cs:
+        * AddColliderAroundChildren(GameObject wrapper) - Adds an imperfect box collider around each organ child and then attaches the organ control script 
 
     ModelLoader.cs:
+        * GetModel(string url) - Takes in a url, cleans it, and passes it off to load model
+        * LoadModel(string path) - Old loading model function. Will be depreciated when node arrays get passed into unity instead of urls
+        * ResetWrapper() - resets the wrapper parent for the models
 
     OrganControllScript.cs:
 
