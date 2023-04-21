@@ -115,17 +115,6 @@ public class CellTypeDataFetcher : MonoBehaviour
     //    TissueBlockSelectActions.OnSelected -= LogCellTypeInfo;
     //}
 
-    // Responsible for printing HubMap ID when tissue-block is hovered upon
-    private void DisplayHubMapID(RaycastHit hit)
-    {
-        if (hit.collider.gameObject.Equals(this.gameObject))
-        {
-            // int startHbmId = weblink.IndexOf("HBM", StringComparison.Ordinal);
-            // var hubMapID = weblink.Substring(startHbmId, 15);
-            Debug.Log(tissueBlockData.HubmapId);
-        }
-    }
-
     // Responsible for printing cell type information when tissue-block is selected
     private void LogCellTypeInfo(RaycastHit hit)
     {

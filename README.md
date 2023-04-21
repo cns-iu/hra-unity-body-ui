@@ -89,3 +89,63 @@ Unity Scripts:
     CellTypeDataFetcher.cs - The script that sets all the cell type data for the CellTypeDataScript
 
     TissueBlockData.cs - A script for the tissue blocks so that they can hold their data and refer to them when needed
+
+
+Unity Functions:
+
+    [Top Level Scripts]
+    JSBridge.cs:
+
+    SceneSetter.cs:
+        * SetCameraInteractivity(bool interacive) - set whether the camera cna be interacted with or not
+        * SetOrganRotationX(float xRotation) - set the x rotation for the root of the organ
+        * SetOrganRotationY(float yRotation) - sets the y rotation for the root of the organ
+        * SetCameraZoom(float zoom) - Sets the zoom for the camera
+        * SetCameraType(string cameraType) - Sets the camera type used (Orthographic or perspective)
+        * LoadScene(NodeArray nodeArray) - Loads the scene based off the given node array. Passes the data off to the Spatial scene manager either as a call to set scene if nothing has been set or as load scene if it has already been initialized
+
+    ColldierTest.cs:
+
+    ModelLoader.cs:
+
+    OrganControllScript.cs:
+
+    SpatialSceneManager.cs:
+        * SetScene(NodeArray _nodeArray) - Starts the inital logic chain for loading the models. Gets called first and then every time after a node array is passed in from the JS side change scene is used instead
+        * ChangeScene(NodeArray _nodeArray) - Sets the scene based off the node array passsed it. turns off not used organs and places the visibile organs with proper rotations
+        * Get(string url) - Get the url for the web request and pass the ndoe array data
+        * GetOrgans() - A task that gets all the organs from the node array and loads in the organs, sets their rotatin, and their opacity
+        * CreateAndPlaceTissueBlocks() - Instantiates the tissue blocks and attaches the script
+        * PlaceOrgan(GameObject organ, SpatialSceneNode node) - Places the organ based off the transform matrix data in the spatial scene node
+        * SetOrganData(GameObject obj, SpatialSceneNode node) - Sets the organ data script attached to each of the leaves
+        * SetOrganOpacity(GameObject organWrapper, float alpha) - Function that sets the organ opacity for each material of the organ gameobjects
+        * ParentTissueBlocksToOrgans(List<GameObject> tissueBlocks, List<GameObject> organs) - Uses both lists to join the tissue blocks with their proper orgna parents
+        * GetEntityIdsBySex(string url) - gets the id for the sex of each organ
+        * GetOrganSex() - Get a specific organ's sex
+        * ReflectZ() - Matrix utility function that reflexts across the z axis
+        * SetTissueBlockData(GameObject obj, SpatialSceneNode node) - Sets the tissue block data for the tissue blocks
+        * SetCellTypeData(GameObject obj) - Sets the cell type data for the organ
+
+    [JS Scripts]
+    WebGLPluginJS.cs & WebGLPluginJS.jsLib: 
+        * SendConsoleLog(string str) - Debug function to log a string to the console
+        * SendEvent(string _id, string eventName, string jsonP) - Function that sends an output after a variable gets changed by a JS data pass
+        * SendOutput(string _id, string eventName, string jsonP) - Function that sends an output after one of the observed variables gets changed in unity
+
+
+    [Utility Scripts]
+    LeaveFinder.cs:
+        * FindLeaves(Transform parent, List<Transform> leafArray) - Finds all the leaves of a parent object given an array of expected children and then returns a list of the transforms for each leaf
+
+    MaterialExtensions.cs:
+        * ToOpaqueMode(this Material material) - A function that takes in a material and makes it opaque
+        * ToFadeMode(this Material material) - Function that takes in a material and fades it
+
+    MatrixExtensions.cs:
+        * BuildMatrix(float[] transformMatrix) - Takes in a list of floats coresponding to a transform matrix and returns said matrix as a Unity Matrix4x4
+
+
+    [Data Scripts]
+    CellTypeDataFetcher.cs:
+        * GetCsv() - gets the csv data for the cell type data using a web request and sets the data internally
+        * tempFormat(string csvText) - gets the temperary formatting for the csv text and then gets the first index and returns the original string with that first position removed
