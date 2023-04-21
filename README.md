@@ -1,71 +1,49 @@
 # hra-unity-body-ui
 
-Application requirements and Libraries:
+## Application requirements and Libraries
 
-    Unity ver 2021.3.4.1f
+- Unity ver 2021.3.4.1f
+- Visual Studio Code (for JavaScript web component development)
 
-    Visual Studio Code
+## How to Run
 
+1. Download the repository and open the unity project (the folder called unity-body-ui)
+1. Navigate to the build settings menu and if not done already convert the project to a WebGL build
+1. Then build the project with the folder destination set to the build folder in this project
+1. From there the wc-body-ui.js file will recognize the build and automatically use that as the unity project for the web component
+1. Lastly open up the index.html file on your browser of choice and the hra body ui should be there
 
+## Web Component Scripts
 
-How to Run:
+- index.html - The index page for the project. Contains two references to the web component, an on screen console log, and buttons/text fields to pass data to the unity build
+- wc-body-ui.js - The web component script. Build using the auto generated unity WebGL code and then modified by adding in observed variables and functions for data passing
+- main.js - The main js file for the index page. Contains functions that get called from the index page which facilitates the data passing towards the web component
+- style.css - The css file for styling the index page. Contains code that formats the web page and the buttons into a nice layout
 
-    Download the repository and open the unity project (the folder called unity-body-ui)
+## Web Component Functions
 
-    Navigate to the build settings menu and if not done already convert the project to a WebGL build
+- wc-body-ui.js
+    - SetUnityInstance() - Called during the initialization of the unity web component. Passes the name of the id to unity
+    - attributeChangedCallback() - a builtin function that waits for any changes in observed attributes at passes the new data to the unity build
+- main.js
+    - SetSomeAttribute() - This function gets called from the buttons on the index page and sets a variable for the first web component to be equal to the user input
+    - SetupListeners() - An initialization function that gets called when the dom loads. It connects listeners to the first web component instance which wait for changes in the observed variables and passes them to the second web component instance
+    - GetScene() - GetScene is a testing function that passes a url containing the json for the HRA models
+    - LogToPage() - A helper function that logs changes in data to the web page for easy debugging and confirmation of variable changes
 
-    Then build the project with the folder destination set to the build folder in this project
+## Unity Scripts
 
-    From there the wc-body-ui.js file will recognize the build and automatically use that as the unity project for the web component
+### Top Level Scripts
+- JSBridge.cs - recieves signals from the WebComponent and applies the changes to unity
+- SceneSetter.cs - Takes the signals from JSBridge and updates the scene accordingly
+- ColldierTest.cs - A first implementation for organ colliders. Generates a box collider for each leaf of the organ reference and then attaches the organ control script to enable clicking interactions.
+- ModelLoader.cs - Loads the models for the organs using GLTFast
+- OrganControllScript.cs - A script that is connected to the children of the organ and refers to the top level organ to enable rotation and translation.
+- SpatialSceneManager.cs - A function that loads all the model and manages them. Passes the models through the main logic loops to set their rotation, opacity, and connect them to the tissue blocks.
 
-    Lastly open up the index.html file on your browser of choice and the hra body ui should be there
-
-
-
-Web Component Scripts:
-
-    index.html - The index page for the project. Contains two references to the web component, an on screen console log, and buttons/text fields to pass data to the unity build
-
-    wc-body-ui.js - The web component script. Build using the auto generated unity WebGL code and then modified by adding in observed variables and functions for data passing
-
-    main.js - The main js file for the index page. Contains functions that get called from the index page which facilitates the data passing towards the web component
-
-    style.css - The css file for styling the index page. Contains code that formats the web page and the buttons into a nice layout
-
-
-Web Component Functions:
-
-    wc-body-ui.js
-        * SetUnityInstance() - Called during the initialization of the unity web component. Passes the name of the id to unity
-        * attributeChangedCallback() - a builtin function that waits for any changes in observed attributes at passes the new data to the unity build
-    
-    main.js
-        * SetSomeAttribute() - This function gets called from the buttons on the index page and sets a variable for the first web component to be equal to the user input
-        * SetupListeners() - An initialization function that gets called when the dom loads. It connects listeners to the first web component instance which wait for changes in the observed variables and passes them to the second web component instance
-        * GetScene() - GetScene is a testing function that passes a url containing the json for the HRA models
-        * LogToPage() - A helper function that logs changes in data to the web page for easy debugging and confirmation of variable changes
-            
-
-
-Unity Scripts:
-
-    [Top Level Scripts]
-    JSBridge.cs - recieves signals from the WebComponent and applies the changes to unity
-
-    SceneSetter.cs - Takes the signals from JSBridge and updates the scene accordingly
-
-    ColldierTest.cs - A first implementation for organ colliders. Generates a box collider for each leaf of the organ reference and then attaches the organ control script to enable clicking interactions.
-
-    ModelLoader.cs - Loads the models for the organs using GLTFast
-
-    OrganControllScript.cs - A script that is connected to the children of the organ and refers to the top level organ to enable rotation and translation.
-
-    SpatialSceneManager.cs - A function that loads all the model and manages them. Passes the models through the main logic loops to set their rotation, opacity, and connect them to the tissue blocks.
-
-    [JS Scripts]
-    WebGLPluginJS.cs - A C# file that takes advantage of [DllImport("__Internal")] to connect to the JSLib file and output code to java script. This file holds all the function names and is the one that gets called in from Unity.
-
-    WebGLPluginJS.jsLib - This file is paired with the C# file to contain functions for data pasing back to java script. Incidentially this file is not a C# file so you may need to "reveal all files" in the text editor you are using as under normal circumstances it will remain hidden
+### JS Scripts
+- WebGLPluginJS.cs - A C# file that takes advantage of [DllImport("__Internal")] to connect to the JSLib file and output code to java script. This file holds all the function names and is the one that gets called in from Unity.
+- WebGLPluginJS.jsLib - This file is paired with the C# file to contain functions for data pasing back to java script. Incidentially this file is not a C# file so you may need to "reveal all files" in the text editor you are using as under normal circumstances it will remain hidden
 
 
 
