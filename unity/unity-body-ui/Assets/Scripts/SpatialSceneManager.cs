@@ -149,7 +149,6 @@ public class SpatialSceneManager : MonoBehaviour
             );
             block.transform.localScale = reflected.lossyScale * 2f;
             SetTissueBlockData(block, nodeArray.nodes[i]);
-            SetCellTypeData(block);
             TissueBlocks.Add(block);
         }
     }
@@ -289,11 +288,5 @@ public class SpatialSceneManager : MonoBehaviour
         dataComponent.Name = node.name;
         dataComponent.Tooltip = node.tooltip;
         dataComponent.CcfAnnotations = node.ccf_annotations;
-    }
-
-    void SetCellTypeData(GameObject obj)
-    {
-        obj.AddComponent<CellTypeData>();
-        obj.AddComponent<CellTypeDataFetcher>();
     }
 }

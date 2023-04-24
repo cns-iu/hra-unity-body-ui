@@ -7,7 +7,8 @@ using UnityEngine.Networking;
 
 public class DataFetcher : MonoBehaviour
 {
-    private NodeArray _nodeArray;
+    [SerializeField] private NodeArray _nodeArray;
+
     public NodeArray NodeArray
     {
         get { return _nodeArray; }
