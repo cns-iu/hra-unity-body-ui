@@ -36,10 +36,11 @@ public class SpatialSceneManager : MonoBehaviour
         //SetScene("https://ccf-api.hubmapconsortium.org/v1/scene?sex=male");
     }
 
-    public async void SetScene(NodeArray _nodeArray)
+    public async void SetScene(String url)
     {
-        nodeArray = _nodeArray;
-
+        WebGLPluginJS.SendConsoleLog("Set Scene: " + url);
+        nodeArray = await Get(url);
+        WebGLPluginJS.SendConsoleLog("Post url to node array");
         textbox.text = nodeArray.nodes.Length.ToString();
 
         await GetOrgans();
@@ -55,7 +56,7 @@ public class SpatialSceneManager : MonoBehaviour
     /// Load scene after it has been set initially
     /// </summary>
     /// <param name="_apiCall"></param>
-    public async void ChangeScene(NodeArray nodeArray)
+    public async void ChangeScene(string url)
     {
 
     }

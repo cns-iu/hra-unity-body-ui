@@ -83,18 +83,16 @@ public class SceneSetter
         }
     }
 
-    public void LoadScene(NodeArray nodeArray)
+    public void LoadScene(string url)
     {
         if (sceneSet)
         {
-
-
-
-            spatialSceneManager.ChangeScene(nodeArray);
+            spatialSceneManager.ChangeScene(url);
         }
         else
         {
-            spatialSceneManager.SetScene(nodeArray);
+            WebGLPluginJS.SendConsoleLog("Load Scene: " + url);
+            spatialSceneManager.SetScene(url);
             sceneSet = true;
         }
     }

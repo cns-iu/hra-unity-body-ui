@@ -54,7 +54,8 @@ public class OrganControlScript : MonoBehaviour
         _initRotation = transform.rotation;
         _initPosition = transform.position;
 
-        topLevelOrgan = transform.root.gameObject;
+        //since the test loader parent is now under an empty get the first child and keep in position 1
+        topLevelOrgan = transform.root.gameObject.transform.GetChild(0).gameObject;
     }
 
     public void Reset()

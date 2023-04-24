@@ -15,31 +15,36 @@ function setupListeners() {
 
   bodyUi.addEventListener('initialized', (event) => {
     logToPage('bodyui1', event);
-    getScene(SCENE.default).then((scene) => {
-      bodyUi.setAttribute('scene', scene);
-    });
+    bodyUi.setAttribute('scene', SCENE.default);
+    // getScene(SCENE.default).then((scene) => {
+    //   console.log(scene)
+    //   bodyUi.setAttribute('scene', scene);
+    // });
   });
   bodyUi2.addEventListener('initialized', (event) => {
     logToPage('bodyui2', event);
-    getScene(SCENE.default).then((scene) => {
-      bodyUi2.setAttribute('scene', scene);
-    });
+    
+    bodyUi2.setAttribute('scene', SCENE.default);
+    // getScene(SCENE.default).then((scene) => {
+    //   console.log(scene)
+    //   bodyUi2.setAttribute('scene', SCENE.default);
+    // });
   });
 
   for (const attribute of UnityBodyUI.observedAttributes) {
     // skip interactive?
     bodyUi.addEventListener(attribute + 'Change', (event) => {
-      const value = event.detail; // check
-      console.log(attribute, event);
-      bodyUi2.setAttribute(attribute, value);
+      if(attribute != 'scene'){
+        console.log("adding listeners for: ", attribute)
+        const value = event.detail; 
+        bodyUi2.setAttribute(attribute, value);
+      }
     });
-    console.log(attribute);
   }
   bodyUi.addEventListener('rotationChange', (event) => {
       const [x, y] = event.detail;
       bodyUi2.setAttribute('rotationx', x);
       bodyUi2.setAttribute('rotationy', y);
-      console.log('rotationChange', [x, y]);
   });
 }
 

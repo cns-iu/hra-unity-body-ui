@@ -37,14 +37,16 @@ public class JSBridge : MonoBehaviour
     /// Set the scene by taking in a node array and either loading in all the assets or
     /// modifying the current scene to match the nodeArrayString
     /// </summary>
-    /// <param name="nodeArrayString"></param>
-    public void SetScene(string nodeArrayString)
+    /// <param name="urlString"></param>
+    public void SetScene(string urlString)
     {
+        WebGLPluginJS.SendConsoleLog(urlString);
+
         //turn the json into a node array
-        NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(nodeArrayString);
+        //NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(urlString);
 
         //send the data off to the scene
-        sceneSetter.LoadScene(nodeArray);
+        sceneSetter.LoadScene(urlString);
     }
 
 
@@ -61,7 +63,6 @@ public class JSBridge : MonoBehaviour
         float rotationX = float.Parse(rotationString);
 
         //Set the unity scene with the val
-        Debug.Log(rotationX);
         sceneSetter.SetOrganRotationX(rotationX);
 
         //send the change in rotationX as an event
@@ -86,7 +87,6 @@ public class JSBridge : MonoBehaviour
         //attribute change callback is going to throw a string
         float rotationY = float.Parse(rotationString);
 
-        Debug.Log(rotationY);
         //Set the unity scene with the val
         sceneSetter.SetOrganRotationY(rotationY);
 

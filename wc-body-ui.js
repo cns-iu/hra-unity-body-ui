@@ -162,15 +162,12 @@ class UnityBodyUI extends HTMLElement {
 
     
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log(name, newValue);
         //For bounds scene and other objects, catch them in 
         if(oldValue != newValue){
             const functionName = `Set${name[0].toUpperCase()}${name.slice(1)}`
             
             if(this.#myGameInstance){
-                console.log(typeof(newValue))
                 this.#myGameInstance.SendMessage("JSBridge", functionName, newValue);
-                
             }
         }
         else{
