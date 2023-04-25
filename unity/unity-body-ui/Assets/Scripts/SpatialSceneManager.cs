@@ -16,18 +16,20 @@ public class SpatialSceneManager : MonoBehaviour
     public List<GameObject> Organs;
 
     //private vars
-    [SerializeField] private NodeArray nodeArray;
+    [Header("Current node array loaded")]
+    [SerializeField] private NodeArray _nodeArray;
 
-    //loader parent for the organs
+    [Header("Parent object for the organs")]
     [SerializeField] private GameObject _loaderParent;
 
+    [Header("Data fetcher script")]
     [SerializeField] private DataFetcher dataFetcher;
 
-    //Variables for tissue blocks
-    [SerializeField] private GameObject preTissueBlock;
-    [SerializeField] private List<GameObject> TissueBlocks;
+    [Header("Tissue block prefab and list")]
+    [SerializeField] private GameObject _preTissueBlock;
+    [SerializeField] private List<GameObject> _TissueBlocks;
 
-    private List<string> MaleEntityIds;
+    private List<string> _MaleEntityIds;
     private List<string> _FemaleEntityIds;
 
     private void Start()
@@ -44,7 +46,7 @@ public class SpatialSceneManager : MonoBehaviour
     {
         //make a call to the data fetcher and grab the node array
         DataFetcher httpClient = dataFetcher;
-        nodeArray = await httpClient.GetNodeArray(url);
+        _nodeArray = await httpClient.GetNodeArray(url);
 
         //wait till this function finishes
         await GetOrgans();
@@ -56,7 +58,7 @@ public class SpatialSceneManager : MonoBehaviour
         CreateAndPlaceTissueBlocks();
 
         //parent the tissue blocks so that they rotate with the models
-        ParentTissueBlocksToOrgans(TissueBlocks, Organs);
+        ParentTissueBlocksToOrgans(_TissueBlocks, Organs);
     }
 
     /// <summary>
@@ -79,7 +81,7 @@ public class SpatialSceneManager : MonoBehaviour
         List<GameObject> loaders = new List<GameObject>();
         Dictionary<GameObject, SpatialSceneNode> dict = new Dictionary<GameObject, SpatialSceneNode>();
 
-        foreach (var node in nodeArray.nodes)
+        foreach (var node in _nodeArray.nodes)
         {
             if (node.scenegraph == null) break;
             GameObject g = new GameObject()
@@ -99,14 +101,14 @@ public class SpatialSceneManager : MonoBehaviour
         for (int i = 0; i < tasks.Count; i++)
         {
             Organs.Add(tasks[i].Result);
-            SetOrganData(tasks[i].Result, nodeArray.nodes[i]);
+            SetOrganData(tasks[i].Result, _nodeArray.nodes[i]);
         }
 
         for (int i = 0; i < Organs.Count; i++)
         {
             //place organ
-            PlaceOrgan(Organs[i], nodeArray.nodes[i]);
-            SetOrganOpacity(Organs[i], nodeArray.nodes[i].opacity);
+            PlaceOrgan(Organs[i], _nodeArray.nodes[i]);
+            SetOrganOpacity(Organs[i], _nodeArray.nodes[i].opacity);
             //SetOrganCollider(Organs[i]);
         }
     }
@@ -116,18 +118,18 @@ public class SpatialSceneManager : MonoBehaviour
     /// </summary>
     void CreateAndPlaceTissueBlocks()
     {
-        for (int i = 1; i < nodeArray.nodes.Length; i++)
+        for (int i = 1; i < _nodeArray.nodes.Length; i++)
         {
-            if (nodeArray.nodes[i].scenegraph != null) continue;
-            Matrix4x4 reflected = ReflectZ() * MatrixExtensions.BuildMatrix(nodeArray.nodes[i].transformMatrix);
+            if (_nodeArray.nodes[i].scenegraph != null) continue;
+            Matrix4x4 reflected = MatrixExtensions.ReflectZ() * MatrixExtensions.BuildMatrix(_nodeArray.nodes[i].transformMatrix);
             GameObject block = Instantiate(
-                preTissueBlock,
+                _preTissueBlock,
                 reflected.GetPosition(),
                 reflected.rotation
             );
             block.transform.localScale = reflected.lossyScale * 2f;
-            SetTissueBlockData(block, nodeArray.nodes[i]);
-            TissueBlocks.Add(block);
+            SetTissueBlockData(block, _nodeArray.nodes[i]);
+            _TissueBlocks.Add(block);
         }
     }
 
@@ -138,7 +140,7 @@ public class SpatialSceneManager : MonoBehaviour
     /// <param name="node"></param>
     void PlaceOrgan(GameObject organ, SpatialSceneNode node) //-1, 1, -1 -> for scale
     {
-        Matrix4x4 reflected = ReflectZ() * MatrixExtensions.BuildMatrix(node.transformMatrix);
+        Matrix4x4 reflected = MatrixExtensions.ReflectZ() * MatrixExtensions.BuildMatrix(node.transformMatrix);
         organ.transform.position = reflected.GetPosition();
         organ.transform.rotation = new Quaternion(0f, 0f, 0f, 1f); //hard-coded to avoid bug when running natively on Quest 2
         organ.transform.localScale = new Vector3(
@@ -199,17 +201,17 @@ public class SpatialSceneManager : MonoBehaviour
     async void ParentTissueBlocksToOrgans(List<GameObject> tissueBlocks, List<GameObject> organs)
     {
         // Add back to AssignEntityIdsToDonorSexLists if delay bug
-        MaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=male");
+        _MaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=male");
         _FemaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=female");
 
         // assign donor sex to organ
         await GetOrganSex();
 
         // assign donor sex to tissue block and parent to organ
-        for (int i = 0; i < TissueBlocks.Count; i++)
+        for (int i = 0; i < _TissueBlocks.Count; i++)
         {
-            TissueBlockData tissueData = TissueBlocks[i].GetComponent<TissueBlockData>();
-            if (MaleEntityIds.Contains(tissueData.EntityId))
+            TissueBlockData tissueData = _TissueBlocks[i].GetComponent<TissueBlockData>();
+            if (_MaleEntityIds.Contains(tissueData.EntityId))
             {
                 tissueData.DonorSex = "Male";
             }
@@ -226,7 +228,7 @@ public class SpatialSceneManager : MonoBehaviour
                 {
                     if (organData.RepresentationOf == annotation && organData.DonorSex == tissueData.DonorSex)
                     {
-                        TissueBlocks[i].transform.parent = Organs[j].transform.GetChild(0).transform;
+                        _TissueBlocks[i].transform.parent = Organs[j].transform.GetChild(0).transform;
                         break;
                     }
                 }
@@ -272,21 +274,6 @@ public class SpatialSceneManager : MonoBehaviour
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// Utility function to flip the matrix along the z axis
-    /// </summary>
-    /// <returns></returns>
-    Matrix4x4 ReflectZ()
-    {
-    var result = new Matrix4x4(
-        new Vector4(1, 0, 0, 0),
-        new Vector4(0, 1, 0, 0),
-        new Vector4(0, 0, -1, 0),
-        new Vector4(0, 0, 0, 1)
-    );
-    return result;
     }
 
     /// <summary>

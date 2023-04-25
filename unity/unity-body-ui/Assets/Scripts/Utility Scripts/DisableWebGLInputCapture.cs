@@ -8,6 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 public class DisableWebGLInputCapture : MonoBehaviour
 {
+    //Enables users to type on Webgl page
     void Start()
     {
 #if !UNITY_EDITOR && UNITY_WEBGL

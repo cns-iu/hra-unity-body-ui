@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class DataFetcher : MonoBehaviour
 {
-    [SerializeField] private NodeArray _nodeArray;
+    private NodeArray _nodeArray;
 
     /// <summary>
     /// Gets the node array for the given url

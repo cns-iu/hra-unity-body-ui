@@ -4,29 +4,33 @@ using UnityEngine;
 
 public class LeavesFinder : MonoBehaviour
 {
-    public List<Transform> leafArray = new List<Transform>();
-    // Start is called before the first frame update
+    private List<Transform> _leafArray = new List<Transform>();
+    
     void Start()
     {
-        FindLeaves(this.transform, leafArray);
+        FindLeaves(this.transform, _leafArray);
     }
 
+    /// <summary>
+    /// Utility function that finds all the leaf children of the organs
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="leafArray"></param>
+    /// <returns></returns>
     public static List<Transform> FindLeaves(Transform parent, List<Transform> leafArray)
     {
-        // Debug.Log(parent.childCount);
         if (parent.childCount == 0)
         {
-            // Debug.Log("no children");
+            //if there are no children just add the parent
             leafArray.Add(parent);
-            // Debug.Log(parent.gameObject.name);
         }
         else
         {
+            //else loop through the children and recursively call find leaves and add it to the leaf array
             foreach (Transform child in parent)
             {
                 FindLeaves(child, leafArray);
                 leafArray.Add(parent);
-                // Debug.Log(child.gameObject.name);
             }
         }
 
