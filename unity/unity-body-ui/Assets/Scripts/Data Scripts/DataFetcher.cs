@@ -9,31 +9,37 @@ public class DataFetcher : MonoBehaviour
 {
     [SerializeField] private NodeArray _nodeArray;
 
-    public NodeArray NodeArray
-    {
-        get { return _nodeArray; }
-    }
-
-    public async Task<NodeArray> Get(string url)
+    /// <summary>
+    /// Gets the node array for the given url
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public async Task<NodeArray> GetNodeArray(string url)
     {
         try
         {
+            //do a unity web request
             using var www = UnityWebRequest.Get(url);
             var operation = www.SendWebRequest();
 
+            //wait while the task isnt finished
             while (!operation.isDone)
                 await Task.Yield();
 
+            //if failed throw an error
             if (www.result != UnityWebRequest.Result.Success)
                 Debug.LogError($"Failed: {www.error}");
 
+            //get the text from the internet
             var result = www.downloadHandler.text;
 
+            //clean up the text and change some labels
             var text = www.downloadHandler.text
            .Replace("@id", "jsonLdId")
            .Replace("@type", "jsonLdType")
            .Replace("\"object\":", "\"glbObject\":");
 
+            //turn into a node array
             _nodeArray = JsonUtility.FromJson<NodeArray>(
                 "{ \"nodes\":" +
                 text
@@ -43,7 +49,8 @@ public class DataFetcher : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"{nameof(Get)} failed: {ex.Message}");
+            //catch an error
+            Debug.LogError($"{nameof(GetNodeArray)} failed: {ex.Message}");
             return default;
         }
     }

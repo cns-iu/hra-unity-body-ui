@@ -9,50 +9,58 @@ using TMPro;
 
 public class SpatialSceneManager : MonoBehaviour
 {
-    public SpatialSceneManager Instance;
-
+    //action
     public static event Action OnOrgansLoaded;
 
+    //public var for organs
+    public List<GameObject> Organs;
+
+    //private vars
     [SerializeField] private NodeArray nodeArray;
 
-    [SerializeField] private GameObject loaderParent;
-
-    //Variables for tissue blocks
-    public List<GameObject> TissueBlocks;
-    [SerializeField] private GameObject preTissueBlock;
-
+    //loader parent for the organs
+    [SerializeField] private GameObject _loaderParent;
 
     [SerializeField] private DataFetcher dataFetcher;
 
-    public List<string> MaleEntityIds;
-    public List<string> FemaleEntityIds;
+    //Variables for tissue blocks
+    [SerializeField] private GameObject preTissueBlock;
+    [SerializeField] private List<GameObject> TissueBlocks;
 
-    public List<GameObject> Organs;
-
-    public TextMeshProUGUI textbox;
+    private List<string> MaleEntityIds;
+    private List<string> _FemaleEntityIds;
 
     private void Start()
     {
+        //uncomment to load the inital scene when in unity editor runtime
         //SetScene("https://ccf-api.hubmapconsortium.org/v1/scene?sex=male");
     }
 
+    /// <summary>
+    /// Set the initial scene, only call one with the inital models
+    /// </summary>
+    /// <param name="url"></param>
     public async void SetScene(String url)
     {
-        WebGLPluginJS.SendConsoleLog("Set Scene: " + url);
-        nodeArray = await Get(url);
-        WebGLPluginJS.SendConsoleLog("Post url to node array");
-        textbox.text = nodeArray.nodes.Length.ToString();
+        //make a call to the data fetcher and grab the node array
+        DataFetcher httpClient = dataFetcher;
+        nodeArray = await httpClient.GetNodeArray(url);
 
+        //wait till this function finishes
         await GetOrgans();
 
+        //invoke the organs
         OnOrgansLoaded?.Invoke();
 
-        ParentTissueBlocksToOrgans(TissueBlocks, Organs);
-
+        //create and place said tissue blocks
         CreateAndPlaceTissueBlocks();
+
+        //parent the tissue blocks so that they rotate with the models
+        ParentTissueBlocksToOrgans(TissueBlocks, Organs);
     }
 
     /// <summary>
+    /// NOT IMPLEMENTED
     /// Load scene after it has been set initially
     /// </summary>
     /// <param name="_apiCall"></param>
@@ -61,48 +69,15 @@ public class SpatialSceneManager : MonoBehaviour
 
     }
 
-
-    public async Task<NodeArray> Get(string url)
-    {
-        try
-        {
-            using var www = UnityWebRequest.Get(url);
-            var operation = www.SendWebRequest();
-
-            while (!operation.isDone)
-                await Task.Yield();
-
-            if (www.result != UnityWebRequest.Result.Success)
-                Debug.LogError($"Failed: {www.error}");
-
-            var result = www.downloadHandler.text;
-
-            var text = www.downloadHandler.text
-           .Replace("@id", "jsonLdId")
-           .Replace("@type", "jsonLdType")
-           .Replace("\"object\":", "\"glbObject\":");
-
-            NodeArray _nodeArray = JsonUtility.FromJson<NodeArray>(
-                "{ \"nodes\":" +
-                text
-                + "}"
-                );
-            return _nodeArray;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"{nameof(Get)} failed: {ex.Message}");
-            return default;
-        }
-    }
-
+    /// <summary>
+    /// Get the organs from the node array and load them
+    /// </summary>
+    /// <returns></returns>
     public async Task GetOrgans()
     {
         List<Task<GameObject>> tasks = new List<Task<GameObject>>();
         List<GameObject> loaders = new List<GameObject>();
         Dictionary<GameObject, SpatialSceneNode> dict = new Dictionary<GameObject, SpatialSceneNode>();
-
-        textbox.text = "Before models get loaded";
 
         foreach (var node in nodeArray.nodes)
         {
@@ -113,7 +88,7 @@ public class SpatialSceneManager : MonoBehaviour
             };
             g.AddComponent<ModelLoader>();
             loaders.Add(g);
-            g.transform.parent = loaderParent.transform;
+            g.transform.parent = _loaderParent.transform;
             Task<GameObject> t = g.GetComponent<ModelLoader>().GetModel(node.scenegraph);
             tasks.Add(t);
         }
@@ -136,7 +111,9 @@ public class SpatialSceneManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Instantiate the tissue blocks and then set their data
+    /// </summary>
     void CreateAndPlaceTissueBlocks()
     {
         for (int i = 1; i < nodeArray.nodes.Length; i++)
@@ -154,6 +131,11 @@ public class SpatialSceneManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Place the organs in their proper location using the transform matrix from the node array
+    /// </summary>
+    /// <param name="organ"></param>
+    /// <param name="node"></param>
     void PlaceOrgan(GameObject organ, SpatialSceneNode node) //-1, 1, -1 -> for scale
     {
         Matrix4x4 reflected = ReflectZ() * MatrixExtensions.BuildMatrix(node.transformMatrix);
@@ -167,6 +149,11 @@ public class SpatialSceneManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Set the organ data to get grabbed when the model gets hovered over
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="node"></param>
     void SetOrganData(GameObject obj, SpatialSceneNode node)
     {
         OrganData dataComponent = obj.AddComponent<OrganData>();
@@ -175,12 +162,16 @@ public class SpatialSceneManager : MonoBehaviour
         dataComponent.tooltip = node.tooltip;
     }
 
+    /// <summary>
+    /// NOT IMPLEMENTED
+    /// Function that sets the opacity for the organs
+    /// If you uncomment the code all the organs will turn white
+    /// </summary>
+    /// <param name="organWrapper"></param>
+    /// <param name="alpha"></param>
     public static void SetOrganOpacity(GameObject organWrapper, float alpha)
     {
         List<Transform> list = new List<Transform>();
-
-        Debug.Log(organWrapper.name);
-        Debug.Log(organWrapper.transform.GetChild(0).name);
 
         list = LeavesFinder.FindLeaves(organWrapper.transform.GetChild(0), list);
 
@@ -191,7 +182,6 @@ public class SpatialSceneManager : MonoBehaviour
             if (renderer == null) continue;
             Color updatedColor = renderer.material.color;
             updatedColor.a = alpha;
-            //Debug.Log(updatedColor);
             renderer.material.color = updatedColor;
 
             Shader standard;
@@ -201,11 +191,16 @@ public class SpatialSceneManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Parents the tissue blocks to the organs
+    /// </summary>
+    /// <param name="tissueBlocks"></param>
+    /// <param name="organs"></param>
     async void ParentTissueBlocksToOrgans(List<GameObject> tissueBlocks, List<GameObject> organs)
     {
         // Add back to AssignEntityIdsToDonorSexLists if delay bug
         MaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=male");
-        FemaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=female");
+        _FemaleEntityIds = await GetEntityIdsBySex("https://ccf-api.hubmapconsortium.org/v1/tissue-blocks?sex=female");
 
         // assign donor sex to organ
         await GetOrganSex();
@@ -239,11 +234,16 @@ public class SpatialSceneManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get a list of ids based off the sex of the organs
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
     public async Task<List<string>> GetEntityIdsBySex(string url)
     {
         List<string> result = new List<string>();
         DataFetcher httpClient = dataFetcher;
-        NodeArray nodeArray = await httpClient.Get(url);
+        NodeArray nodeArray = await httpClient.GetNodeArray(url);
         foreach (var node in nodeArray.nodes)
         {
             result.Add(node.jsonLdId);
@@ -251,18 +251,21 @@ public class SpatialSceneManager : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Set the organ data to have the sex of the model
+    /// </summary>
+    /// <returns></returns>
     public async Task GetOrganSex()
     {
         DataFetcher httpClient = dataFetcher;
-        NodeArray nodeArray = await httpClient.Get("https://ccf-api.hubmapconsortium.org/v1/reference-organs");
-        // Debug.Log(nodeArray.nodes.Length);
+        NodeArray nodeArray = await httpClient.GetNodeArray("https://ccf-api.hubmapconsortium.org/v1/reference-organs");
+        
         foreach (var organ in Organs)
         {
             OrganData organData = organ.GetComponent<OrganData>();
 
             foreach (var node in nodeArray.nodes)
             {
-                // Debug.Log("file: " + node.reference_organ);
                 if (organData.SceneGraph == node.glbObject.file)
                 {
                     organData.DonorSex = node.sex;
@@ -271,6 +274,10 @@ public class SpatialSceneManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Utility function to flip the matrix along the z axis
+    /// </summary>
+    /// <returns></returns>
     Matrix4x4 ReflectZ()
     {
     var result = new Matrix4x4(
@@ -282,6 +289,11 @@ public class SpatialSceneManager : MonoBehaviour
     return result;
     }
 
+    /// <summary>
+    /// Se the tissue block data
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="node"></param>
     void SetTissueBlockData(GameObject obj, SpatialSceneNode node)
     {
         TissueBlockData dataComponent = obj.AddComponent<TissueBlockData>();
