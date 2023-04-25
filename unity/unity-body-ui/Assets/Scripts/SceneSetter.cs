@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SceneSetter
-    : MonoBehaviour
+public class SceneSetter : MonoBehaviour
 {
     [Header("JSBridge")]
     [SerializeField] private JSBridge _jsBridge;
@@ -25,10 +24,10 @@ public class SceneSetter
     /// <summary>
     /// Sets the interactivity for the camera (whether it can be moved or not)
     /// </summary>
-    /// <param name="interacive"></param>
-    public void SetCameraInteractivity(bool interacive)
+    /// <param name="interactive"></param>
+    public void SetScreenInteractivity(bool interactive)
     {
-        interactivity = interacive;
+        interactivity = interactive;
     }
 
     /// <summary>

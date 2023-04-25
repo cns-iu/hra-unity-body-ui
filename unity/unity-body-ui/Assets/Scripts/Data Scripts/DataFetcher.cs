@@ -57,7 +57,7 @@ public class DataFetcher : MonoBehaviour
 }
 
 
-//Json Funcs\\
+//Classes to catpruee JSON responses from CCF API, which we receive and send
 [Serializable]
 public class NodeArray
 {
@@ -100,6 +100,7 @@ public class GLBObject
     public string file;
 }
 
+//to enable receiving different data types (to parse and cast as string or boolean)
 [Serializable]
 public class JsonNum
 {
@@ -118,6 +119,7 @@ public class JsonBool
     public bool boolean;
 }
 
+//organ rotation! Z-axis is locked for rotation
 [Serializable]
 public class Rotation
 {
@@ -125,6 +127,7 @@ public class Rotation
     public float rotationY;
 }
 
+//not implemented yet, Bruce and Riley never decided how this data would be received
 [Serializable]
 public class NodeDragEvent
 {

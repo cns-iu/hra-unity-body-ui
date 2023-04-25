@@ -20,5 +20,5 @@ public class TissueBlockData : MonoBehaviour
     public string HubmapId { get; set; }
 
     [field: SerializeField]
-    public string DonorSex;
+    public string DonorSex { get; set; }
 }

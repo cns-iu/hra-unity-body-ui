@@ -20,5 +20,5 @@ public class OrganData : MonoBehaviour
     public Vector3 DefaultPositionExtruded { get; set; }
 
     [field: SerializeField]
-    public string tooltip { get; set; }
+    public string Tooltip { get; set; }
 }

@@ -161,7 +161,7 @@ public class SpatialSceneManager : MonoBehaviour
         OrganData dataComponent = obj.AddComponent<OrganData>();
         dataComponent.SceneGraph = node.scenegraph;
         dataComponent.RepresentationOf = node.representation_of;
-        dataComponent.tooltip = node.tooltip;
+        dataComponent.Tooltip = node.tooltip;
     }
 
     /// <summary>
