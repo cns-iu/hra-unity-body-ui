@@ -8,6 +8,9 @@ public class OrganControlScript : MonoBehaviour
     [Header("JSBridge")]
     [SerializeField] public JSBridge jsBridge;
 
+    [Header("Scene Setter")]
+    [SerializeField] public SceneSetter sceneSetter;
+
     [Header("Rotation Speed")]
     [SerializeField] private float _rotationSpeed = 0.3f;
 
@@ -30,7 +33,7 @@ public class OrganControlScript : MonoBehaviour
     [SerializeField] private List<Transform> _leafChildren;
 
     //dont need to expose these
-    private Vector3 myObjectStartPosition, myMouseStartWorldPosition;
+    private Vector3 _myObjectStartPosition, _myMouseStartWorldPosition;
 
     private bool hovering = false;
     private bool rotating = false;
@@ -51,7 +54,7 @@ public class OrganControlScript : MonoBehaviour
     private void OnMouseEnter()
     {
         //Trigger the mouse down output in the JS Bridge
-        //jsBridge.GetNodeHoverStart();
+        jsBridge.GetNodeHoverStart();
 
         hovering = true;
     }
@@ -59,7 +62,7 @@ public class OrganControlScript : MonoBehaviour
     private void OnMouseExit()
     {
         //Trigger the mouse down output in the JS Bridge
-        //jsBridge.GetNodeHoverStop();
+        jsBridge.GetNodeHoverStop();
 
         hovering = false;
     }
@@ -73,32 +76,32 @@ public class OrganControlScript : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 //Trigger the mouse down output in the JS Bridge
-                //jsBridge.GetNodeClick();
+                jsBridge.GetNodeClick();
 
                 Vector3 lMousePosition = Input.mousePosition;
-                myMouseStartWorldPosition = lMousePosition;
-                myObjectStartPosition = transform.position;
+                _myMouseStartWorldPosition = lMousePosition;
+                _myObjectStartPosition = _topLevelOrgan.transform.position;
 
                 rotating = true;
             }
             else if (Input.GetMouseButtonDown(1))
             {
                 //Trigger the mouse down output in the JS Bridge
-                //jsBridge.GetNodeClick();
+                jsBridge.GetNodeClick();
 
                 translating = true;
             }
         }
 
-        if (Input.GetMouseButton(0) && rotating)
+        if (Input.GetMouseButton(0) && rotating && sceneSetter.interactivity)
         {
             //Trigger the mouse down output in the JS Bridge
-            //jsBridge.GetNodeDrag();
+            jsBridge.GetNodeDrag();
 
-            //rotate the cam around the obj
+            //use rolling ball alg to rotate organ
             Vector3 lMousePosition = Input.mousePosition;
 
-            Vector3 dr = lMousePosition - myMouseStartWorldPosition;
+            Vector3 dr = lMousePosition - _myMouseStartWorldPosition;
 
             Vector3 _n = new Vector3(-dr.y, dr.x, 0);
 
@@ -106,20 +109,21 @@ public class OrganControlScript : MonoBehaviour
 
             _topLevelOrgan.transform.RotateAround(this.transform.position, _n, -dr.magnitude / _radius);
 
-            myMouseStartWorldPosition = lMousePosition;
+            _myMouseStartWorldPosition = lMousePosition;
 
-            _topLevelOrgan.transform.position = Vector3.zero;
+            _topLevelOrgan.transform.position = _myObjectStartPosition;
+
+            //Send off the new rotation
+            jsBridge.GetRotationChange(_topLevelOrgan.transform.eulerAngles.x, _topLevelOrgan.transform.eulerAngles.y);
         }
-        else if (Input.GetMouseButton(1) && translating)
+        else if (Input.GetMouseButton(1) && translating && sceneSetter.interactivity)
         {
             //Trigger the mouse down output in the JS Bridge
-            //jsBridge.GetNodeDrag();
+            jsBridge.GetNodeDrag();
 
             Vector3 newPos = _topLevelOrgan.transform.position + (Vector3.right * Input.GetAxis("Mouse X")) + (Vector3.up * Input.GetAxis("Mouse Y"));
 
             _topLevelOrgan.transform.position = Vector3.Lerp(_topLevelOrgan.transform.position, newPos, _translateSpeed);
-
-            Debug.Log(this.name);
         }
 
         //reset transition

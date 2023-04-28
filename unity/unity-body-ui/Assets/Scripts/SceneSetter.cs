@@ -47,7 +47,7 @@ public class SceneSetter : MonoBehaviour
         _organReference.transform.eulerAngles = newRotation;
 
         //pass data to JSBridge for output
-        _jsBridge.GetRotationChange(xRotation, _organReference.transform.rotation.y);
+        _jsBridge.GetRotationChange(_organReference.transform.eulerAngles.x, _organReference.transform.eulerAngles.y);
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public class SceneSetter : MonoBehaviour
         _organReference.transform.eulerAngles = newRotation;
 
         //pass data to JSBridge for output
-        _jsBridge.GetRotationChange(_organReference.transform.rotation.x, yRotation);
+        _jsBridge.GetRotationChange(_organReference.transform.eulerAngles.x, _organReference.transform.eulerAngles.y);
     }
 
     public void SetCameraZoom(float zoom)

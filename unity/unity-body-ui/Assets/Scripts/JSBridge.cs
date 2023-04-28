@@ -238,6 +238,8 @@ public class JSBridge : MonoBehaviour
         rot.rotationX = x;
         rot.rotationY = y;
 
+        WebGLPluginJS.SendConsoleLog("Rotation values were : " + x.ToString() + ", "+ y.ToString());
+
         //Convert the obj to a jason
         string json = JsonUtility.ToJson(rot);
 

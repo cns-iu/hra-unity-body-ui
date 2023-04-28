@@ -9,6 +9,8 @@ public class ColliderTest : MonoBehaviour
 
     [SerializeField] private JSBridge _jsBridge;
 
+    [SerializeField] private SceneSetter _sceneSetter;
+
     private void OnEnable()
     {
         //wait till all the organs are loaded
@@ -76,11 +78,11 @@ public class ColliderTest : MonoBehaviour
         wrapper.transform.localRotation = rot;
         wrapper.transform.localScale = scale;
 
-
         //attach the organ control script
         boxCol.AddComponent<OrganControlScript>();
 
         //pass the reference to the js bridge
         boxCol.GetComponent<OrganControlScript>().jsBridge = _jsBridge;
+        boxCol.GetComponent<OrganControlScript>().sceneSetter = _sceneSetter;
     }
 }
