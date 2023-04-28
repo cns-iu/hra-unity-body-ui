@@ -80,8 +80,6 @@
     - LoadModel(string path) - Old loading model function. Will be depreciated when node arrays get passed into unity instead of urls
     - ResetWrapper() - resets the wrapper parent for the models
 
-- OrganControllScript.cs:
-
 - SpatialSceneManager.cs:
     - SetScene(NodeArray _nodeArray) - Starts the inital logic chain for loading the models. Gets called first and then every time after a node array is passed in from the JS side change scene is used instead
     - ChangeScene(NodeArray _nodeArray) - Sets the scene based off the node array passsed it. turns off not used organs and places the visibile organs with proper rotations
