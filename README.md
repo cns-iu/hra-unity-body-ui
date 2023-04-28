@@ -114,3 +114,6 @@
     - ToFadeMode(this Material material) - Function that takes in a material and fades it
 - MatrixExtensions.cs:
     - BuildMatrix(float[] transformMatrix) - Takes in a list of floats coresponding to a transform matrix and returns said matrix as a Unity Matrix4x4
+
+    ### Unity Scene Hierarchy
+    ![image](https://user-images.githubusercontent.com/16376952/235123056-90b8fad5-0dcc-48c1-b899-3b4fbc2b6d12.png)
