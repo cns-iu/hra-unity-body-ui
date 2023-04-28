@@ -100,12 +100,11 @@ class UnityBodyUI extends HTMLElement {
         } else {
             // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-            // canvas.style.width = "960px";
-            // canvas.style.height = "600px";
         }
 
         loadingBar.style.display = "block";
 
+        //Start playing the unity build
         var script = document.createElement("script");
         script.src = loaderUrl;
         script.onload = () => {
@@ -132,6 +131,7 @@ class UnityBodyUI extends HTMLElement {
 
 
     
+    //The list of observed attributes to pass to unity
     static get observedAttributes() {
         return ['bounds', 'target', 'rotationy', 'camera',
           'rotationx', 'zoom', 'interactive', 'scene'];
@@ -153,6 +153,8 @@ class UnityBodyUI extends HTMLElement {
             if(this.getAttribute(element)!==null){
               var newVal = Number(this.getAttribute(element));
               this.attributeChangedCallback(element, null, newVal);
+
+              //add a listener for the outputs from unity
               this.addEventListener(element+"Change", (event) => this.setAttribute(element, event.detail));
             }
           });
@@ -162,15 +164,18 @@ class UnityBodyUI extends HTMLElement {
 
     
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log(name, newValue);
         //For bounds scene and other objects, catch them in 
-        if(oldValue != newValue){
+        if(oldValue != newValue) {
+            //Do some string concatination
             const functionName = `Set${name[0].toUpperCase()}${name.slice(1)}`
             
             if(this.#myGameInstance){
-                console.log(typeof(newValue))
+                if (typeof newValue === 'object') {
+                    newValue = JSON.stringify(newValue, null, 2);
+                    console.log(`converted ${name} to json`);
+                }
+                //pass the data to the JSBridge
                 this.#myGameInstance.SendMessage("JSBridge", functionName, newValue);
-                
             }
         }
         else{

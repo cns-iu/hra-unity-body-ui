@@ -8,9 +8,8 @@ using TMPro;
 
 public class JSBridge : MonoBehaviour
 {
-    [SerializeField] private SceneSetter sceneSetter;
-
-    private string id = "";
+    [SerializeField] private SceneSetter _sceneSetter;
+    private string _id = "";
 
 
 
@@ -23,7 +22,7 @@ public class JSBridge : MonoBehaviour
     /// <param name="_id"></param>
     public void SetInstance(string _id)
     {
-        id = _id;
+        this._id = _id;
 
         //since this needs to be called first, output the initialization
         GetInitialized();
@@ -37,14 +36,25 @@ public class JSBridge : MonoBehaviour
     /// Set the scene by taking in a node array and either loading in all the assets or
     /// modifying the current scene to match the nodeArrayString
     /// </summary>
-    /// <param name="nodeArrayString"></param>
-    public void SetScene(string nodeArrayString)
+    /// <param name="nodeArrayJson"></param>
+    public void SetScene(string nodeArrayJson)
     {
         //turn the json into a node array
-        NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(nodeArrayString);
+        //Need to document issue where NodeArray content goes missing between main.js and wc-body-ui.js (when data comes from website to build) -> issue with JS code
+        
+        nodeArrayJson.Replace("@id", "jsonLdId")
+           .Replace("@type", "jsonLdType")
+           .Replace("\"object\":", "\"glbObject\":");
+
+        //turn into a node array
+        NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(
+            "{ \"nodes\":" +
+            nodeArrayJson
+            + "}"
+            );
 
         //send the data off to the scene
-        sceneSetter.LoadScene(nodeArray);
+        _sceneSetter.LoadScene(nodeArray);
     }
 
 
@@ -61,8 +71,7 @@ public class JSBridge : MonoBehaviour
         float rotationX = float.Parse(rotationString);
 
         //Set the unity scene with the val
-        Debug.Log(rotationX);
-        sceneSetter.SetOrganRotationX(rotationX);
+        _sceneSetter.SetOrganRotationX(rotationX);
 
         //send the change in rotationX as an event
         JsonNum rot = new JsonNum();
@@ -74,7 +83,7 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(rot);
 
         //output
-        WebGLPluginJS.SendEvent(id, "rotationX", json);
+        WebGLPluginJS.SendEvent(_id, "rotationX", json);
     }
 
     /// <summary>
@@ -86,9 +95,8 @@ public class JSBridge : MonoBehaviour
         //attribute change callback is going to throw a string
         float rotationY = float.Parse(rotationString);
 
-        Debug.Log(rotationY);
         //Set the unity scene with the val
-        sceneSetter.SetOrganRotationY(rotationY);
+        _sceneSetter.SetOrganRotationY(rotationY);
 
         //send the change in rotationX as an event
         JsonNum rot = new JsonNum();
@@ -100,7 +108,7 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(rot);
 
         //output
-        WebGLPluginJS.SendEvent(id, "rotation", json);
+        WebGLPluginJS.SendEvent(_id, "rotation", json);
     }
 
     /// <summary>
@@ -113,7 +121,7 @@ public class JSBridge : MonoBehaviour
         float zoom = float.Parse(zoomString);
 
         //Set the unity scene with the val
-        sceneSetter.SetCameraZoom(zoom);
+        _sceneSetter.SetCameraZoom(zoom);
 
         //convert the data to json and output it as an event
         JsonNum zNum = new JsonNum();
@@ -125,7 +133,7 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(zNum);
 
         //output
-        WebGLPluginJS.SendEvent(id, "zoom", json);
+        WebGLPluginJS.SendEvent(_id, "zoom", json);
     }
 
     /// <summary>
@@ -149,7 +157,7 @@ public class JSBridge : MonoBehaviour
         //sceneManager.SetOrgan();
 
         //output
-        WebGLPluginJS.SendEvent(id, "target", organString);
+        WebGLPluginJS.SendEvent(_id, "target", organString);
     }
 
     /// <summary>
@@ -173,7 +181,7 @@ public class JSBridge : MonoBehaviour
     public void SetCamera(string camera)
     {
         //Set the unity scene with the val
-        sceneSetter.SetCameraType(camera);
+        _sceneSetter.SetCameraType(camera);
 
         //convert the data to json and output it as an event
         JsonString cam = new JsonString();
@@ -185,7 +193,7 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(cam);
 
         //output
-        WebGLPluginJS.SendEvent(id, "camera", json);
+        WebGLPluginJS.SendEvent(_id, "camera", json);
     }
 
     /// <summary>
@@ -197,7 +205,7 @@ public class JSBridge : MonoBehaviour
         bool interactive = Convert.ToBoolean(interactivityString);
 
         //Set the unity scene with the val
-        sceneSetter.SetCameraInteractivity(interactive);
+        _sceneSetter.SetScreenInteractivity(interactive);
 
         //convert the data to json and output it as an event
         JsonBool interactivity = new JsonBool();
@@ -209,7 +217,7 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(interactivity);
 
         //output
-        WebGLPluginJS.SendEvent(id, "interactive", json);
+        WebGLPluginJS.SendEvent(_id, "interactive", json);
     }
 
 
@@ -221,7 +229,7 @@ public class JSBridge : MonoBehaviour
     public void GetInitialized()
     {
         //Send the string initialized to the WebGL pluggin
-        WebGLPluginJS.SendOutput(id, "initialized", null);
+        WebGLPluginJS.SendOutput(_id, "initialized", null);
     }
 
     /// <summary>
@@ -238,11 +246,13 @@ public class JSBridge : MonoBehaviour
         rot.rotationX = x;
         rot.rotationY = y;
 
+        WebGLPluginJS.SendConsoleLog("Rotation values were : " + x.ToString() + ", "+ y.ToString());
+
         //Convert the obj to a jason
         string json = JsonUtility.ToJson(rot);
 
         //Output to the webgl script
-        WebGLPluginJS.SendOutput(id, "rotationChange", json);
+        WebGLPluginJS.SendOutput(_id, "rotationChange", json);
     }
 
     /// <summary>
@@ -257,7 +267,7 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(node);
 
         //output the node drag event to the webgl script
-        WebGLPluginJS.SendOutput(id, "nodeDrag", json);
+        WebGLPluginJS.SendOutput(_id, "nodeDrag", json);
     }
 
     /// <summary>
@@ -272,7 +282,7 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(node);
 
         //output the node click event to the webgl script
-        WebGLPluginJS.SendOutput(id, "nodeClick", json);
+        WebGLPluginJS.SendOutput(_id, "nodeClick", json);
     }
 
     /// <summary>
@@ -304,6 +314,6 @@ public class JSBridge : MonoBehaviour
         string json = JsonUtility.ToJson(node);
 
         //output the data to the webgl script
-        WebGLPluginJS.SendOutput(id, "nodeHoverStop", json);
+        WebGLPluginJS.SendOutput(_id, "nodeHoverStop", json);
     }
 }

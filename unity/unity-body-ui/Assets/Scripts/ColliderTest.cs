@@ -5,21 +5,29 @@ using UnityEngine;
 
 public class ColliderTest : MonoBehaviour
 {
-    [SerializeField] private SpatialSceneManager sceneBuilder;
+    [SerializeField] private SpatialSceneManager _sceneManager;
 
-    [SerializeField] private JSBridge jsBridge;
+    [SerializeField] private JSBridge _jsBridge;
+
+    [SerializeField] private SceneSetter _sceneSetter;
 
     private void OnEnable()
     {
+        //wait till all the organs are loaded
         SpatialSceneManager.OnOrgansLoaded += () =>
         {
-            foreach (var o in sceneBuilder.Organs)
+            //add a collider for each organ in the scene manager
+            foreach (var o in _sceneManager.Organs)
             {
                 AddColliderAroundChildren(o);
             }
         };
     }
 
+    /// <summary>
+    /// Adds a box colider around an organ and then attaches an organ control script
+    /// </summary>
+    /// <param name="wrapper"></param>
     private void AddColliderAroundChildren(GameObject wrapper)
     {
         var pos = wrapper.transform.localPosition;
@@ -70,11 +78,11 @@ public class ColliderTest : MonoBehaviour
         wrapper.transform.localRotation = rot;
         wrapper.transform.localScale = scale;
 
-
         //attach the organ control script
         boxCol.AddComponent<OrganControlScript>();
 
         //pass the reference to the js bridge
-        boxCol.GetComponent<OrganControlScript>().jsBridge = jsBridge;
+        boxCol.GetComponent<OrganControlScript>().jsBridge = _jsBridge;
+        boxCol.GetComponent<OrganControlScript>().sceneSetter = _sceneSetter;
     }
 }

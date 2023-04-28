@@ -2,80 +2,92 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SceneSetter
-    : MonoBehaviour
+public class SceneSetter : MonoBehaviour
 {
     [Header("JSBridge")]
-    public JSBridge jsBridge;
+    [SerializeField] private JSBridge _jsBridge;
 
     [Header("Organs")]
-    public GameObject organReference;
-    public OrganControlScript organControlScript;
+    [SerializeField] private GameObject _organReference;
 
     [Header("Camera")]
-    public Camera cam;
-
-    [Header("Interactivity")]
-    public bool interactivity = true;
+    [SerializeField] private Camera _cam;
 
     [Header("Scene varaibles")]
-    public SpatialSceneManager spatialSceneManager;
+    [SerializeField] private SpatialSceneManager _spatialSceneManager;
+
+    [Header("Public bools")]
+    public bool interactivity = true;
     public bool sceneSet = false;
 
 
-
-    public void SetCameraInteractivity(bool interacive)
+    /// <summary>
+    /// Sets the interactivity for the camera (whether it can be moved or not)
+    /// </summary>
+    /// <param name="interactive"></param>
+    public void SetScreenInteractivity(bool interactive)
     {
-        interactivity = interacive;
+        interactivity = interactive;
     }
 
+    /// <summary>
+    /// Set the x rotation equal to the passed value
+    /// </summary>
+    /// <param name="xRotation"></param>
     public void SetOrganRotationX(float xRotation)
     {
-        float yRot = organReference.transform.eulerAngles.y;
-        float zRot = organReference.transform.eulerAngles.z;
+        //get current y and z rotion 
+        float yRot = _organReference.transform.eulerAngles.y;
+        float zRot = _organReference.transform.eulerAngles.z;
 
+        //create a new rotation using the passed xrotation
         Vector3 newRotation = new Vector3(xRotation, yRot, zRot);
 
-        organReference.transform.eulerAngles = newRotation;
+        //set the euler angle equal to the new rotation
+        _organReference.transform.eulerAngles = newRotation;
 
-        //organReference.transform.Rotate(new Vector3(xRotation, 0, 0));
-
-        //get local rotation
-        jsBridge.GetRotationChange(xRotation, organReference.transform.rotation.y);
-        Debug.Log(organReference.transform.rotation.x + " " + organReference.transform.rotation.y);
+        //pass data to JSBridge for output
+        _jsBridge.GetRotationChange(_organReference.transform.eulerAngles.x, _organReference.transform.eulerAngles.y);
     }
 
+    /// <summary>
+    /// Set the y rotation equal to the passed value
+    /// </summary>
+    /// <param name="yRotation"></param>
     public void SetOrganRotationY(float yRotation)
     {
-        float xRot = organReference.transform.eulerAngles.x;
-        float zRot = organReference.transform.eulerAngles.z;
+        //get current x and z rotation
+        float xRot = _organReference.transform.eulerAngles.x;
+        float zRot = _organReference.transform.eulerAngles.z;
 
-
+        //create a new rotation using the passed yrotation
         Vector3 newRotation = new Vector3(xRot, yRotation, zRot);
 
-        organReference.transform.eulerAngles = newRotation;
+        //set the euler angle equal to the new rotation
+        _organReference.transform.eulerAngles = newRotation;
 
-        //organReference.transform.Rotate(new Vector3(0, yRotation, 0));
-
-        jsBridge.GetRotationChange(organReference.transform.rotation.x, yRotation);
-
-        Debug.Log(organReference.transform.eulerAngles.x + " " + organReference.transform.eulerAngles.y);
+        //pass data to JSBridge for output
+        _jsBridge.GetRotationChange(_organReference.transform.eulerAngles.x, _organReference.transform.eulerAngles.y);
     }
 
     public void SetCameraZoom(float zoom)
     {
-        cam.fieldOfView = zoom;
+        _cam.fieldOfView = zoom;
     }
 
+    /// <summary>
+    /// Sets the camera type to either orthographic or perspective
+    /// </summary>
+    /// <param name="cameraType"></param>
     public void SetCameraType(string cameraType)
     {
         if (cameraType == "orthographic")
         {
-            cam.orthographic = true;
+            _cam.orthographic = true;
         }
         else if (cameraType == "perspective")
         {
-            cam.orthographic = false;
+            _cam.orthographic = false;
         }
         else
         {
@@ -83,18 +95,21 @@ public class SceneSetter
         }
     }
 
+    /// <summary>
+    /// Loads the scene based off the passed url from the JS bridge
+    /// </summary>
+    /// <param name="url"></param>
     public void LoadScene(NodeArray nodeArray)
     {
         if (sceneSet)
         {
-
-
-
-            spatialSceneManager.ChangeScene(nodeArray);
+            //if the scene has been loaded already just change it
+            _spatialSceneManager.ChangeScene(nodeArray);
         }
         else
         {
-            spatialSceneManager.SetScene(nodeArray);
+            //if the scene has not been loaded then generate all the models and load the scene
+            _spatialSceneManager.SetScene(nodeArray);
             sceneSet = true;
         }
     }
