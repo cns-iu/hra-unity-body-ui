@@ -4,6 +4,10 @@ using UnityEngine;
 
 public static class MaterialExtensions { 
 
+    /// <summary>
+    /// Function to make the model renderers opaque
+    /// </summary>
+    /// <param name="material"></param>
     public static void ToOpaqueMode(this Material material)
     {
         material.SetOverrideTag("RenderType", "");
@@ -16,6 +20,10 @@ public static class MaterialExtensions {
         material.renderQueue = -1;
     }
 
+    /// <summary>
+    /// Function to make the model renderers transparent
+    /// </summary>
+    /// <param name="material"></param>
     public static void ToFadeMode(this Material material)
     {
         material.SetOverrideTag("RenderType", "Transparent");
