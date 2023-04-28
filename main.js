@@ -21,27 +21,25 @@ function setupListeners() {
   //add a listener for initialized to both screens and then pass the scene (as a url commented code is node array)
   bodyUi.addEventListener('initialized', (event) => {
     logToPage('bodyui1', event);
-    bodyUi.setAttribute('scene', SCENE.default);
-    // getScene(SCENE.default).then((scene) => {
-    //   console.log(scene)
-    //   bodyUi.setAttribute('scene', scene);
-    // });
+    getScene(SCENE.default).then((scene) => {
+      console.log(scene)
+      bodyUi.setAttribute('scene', scene);
+    });
   });
   bodyUi2.addEventListener('initialized', (event) => {
     logToPage('bodyui2', event);
     
-    bodyUi2.setAttribute('scene', SCENE.default);
-    // getScene(SCENE.default).then((scene) => {
-    //   console.log(scene)
-    //   bodyUi2.setAttribute('scene', SCENE.default);
-    // });
+    getScene(SCENE.default).then((scene) => {
+      console.log(scene)
+      bodyUi2.setAttribute('scene', scene);
+    });
   });
 
   //Add listeners to first screen that set data for second screen
   for (const attribute of UnityBodyUI.observedAttributes) {
     // skip interactive?
     bodyUi.addEventListener(attribute + 'Change', (event) => {
-      if(attribute != 'scene'){
+      if(attribute !== 'scene' && attribute !== 'interactive') {
         console.log("adding listeners for: ", attribute)
         const value = event.detail; 
         bodyUi2.setAttribute(attribute, value);
@@ -65,7 +63,8 @@ const SCENE = {
 
 function getScene(url) {
   //Return the json got from the url
-  return fetch(url).then(r => r.json());
+  //idealy this should be r.json() but the dataloss when going between scenes prevents thiss
+  return fetch(url).then(r => r.text());
 }
 
 function logToPage(str){

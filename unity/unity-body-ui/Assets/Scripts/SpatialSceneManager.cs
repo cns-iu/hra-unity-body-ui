@@ -45,11 +45,10 @@ public class SpatialSceneManager : MonoBehaviour
     /// Set the initial scene, only call one with the inital models
     /// </summary>
     /// <param name="url"></param>
-    public async void SetScene(String url)
+    public async void SetScene(NodeArray nodeArray)
     {
-        //make a call to the data fetcher and grab the node array
-        DataFetcher httpClient = dataFetcher;
-        _nodeArray = await httpClient.GetNodeArray(url);
+        //set the internal node array to be the new node array
+        _nodeArray = nodeArray;
 
         //wait till this function finishes
         await GetOrgans();
@@ -69,7 +68,7 @@ public class SpatialSceneManager : MonoBehaviour
     /// Load scene after it has been set initially
     /// </summary>
     /// <param name="_apiCall"></param>
-    public async void ChangeScene(string url)
+    public async void ChangeScene(NodeArray nodeArray)
     {
 
     }

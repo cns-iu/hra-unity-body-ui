@@ -165,11 +165,15 @@ class UnityBodyUI extends HTMLElement {
     
     attributeChangedCallback(name, oldValue, newValue) {
         //For bounds scene and other objects, catch them in 
-        if(oldValue != newValue){
+        if(oldValue != newValue) {
             //Do some string concatination
             const functionName = `Set${name[0].toUpperCase()}${name.slice(1)}`
             
             if(this.#myGameInstance){
+                if (typeof newValue === 'object') {
+                    newValue = JSON.stringify(newValue, null, 2);
+                    console.log(`converted ${name} to json`);
+                }
                 //pass the data to the JSBridge
                 this.#myGameInstance.SendMessage("JSBridge", functionName, newValue);
             }

@@ -99,18 +99,17 @@ public class SceneSetter : MonoBehaviour
     /// Loads the scene based off the passed url from the JS bridge
     /// </summary>
     /// <param name="url"></param>
-    public void LoadScene(string url)
+    public void LoadScene(NodeArray nodeArray)
     {
         if (sceneSet)
         {
             //if the scene has been loaded already just change it
-            _spatialSceneManager.ChangeScene(url);
+            _spatialSceneManager.ChangeScene(nodeArray);
         }
         else
         {
             //if the scene has not been loaded then generate all the models and load the scene
-            WebGLPluginJS.SendConsoleLog("Load Scene: " + url);
-            _spatialSceneManager.SetScene(url);
+            _spatialSceneManager.SetScene(nodeArray);
             sceneSet = true;
         }
     }

@@ -36,17 +36,25 @@ public class JSBridge : MonoBehaviour
     /// Set the scene by taking in a node array and either loading in all the assets or
     /// modifying the current scene to match the nodeArrayString
     /// </summary>
-    /// <param name="urlString"></param>
-    public void SetScene(string urlString)
+    /// <param name="nodeArrayJson"></param>
+    public void SetScene(string nodeArrayJson)
     {
-        WebGLPluginJS.SendConsoleLog(urlString);
-
         //turn the json into a node array
         //Need to document issue where NodeArray content goes missing between main.js and wc-body-ui.js (when data comes from website to build) -> issue with JS code
-        //NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(urlString);
+        
+        nodeArrayJson.Replace("@id", "jsonLdId")
+           .Replace("@type", "jsonLdType")
+           .Replace("\"object\":", "\"glbObject\":");
+
+        //turn into a node array
+        NodeArray nodeArray = JsonUtility.FromJson<NodeArray>(
+            "{ \"nodes\":" +
+            nodeArrayJson
+            + "}"
+            );
 
         //send the data off to the scene
-        _sceneSetter.LoadScene(urlString);
+        _sceneSetter.LoadScene(nodeArray);
     }
 
 
