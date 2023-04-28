@@ -69,7 +69,7 @@
     TissueBlockData.cs - A script for the tissue blocks so that they can hold their data and refer to them when needed
 
 
-Unity Functions:
+## Unity Functions:
 
     [Top Level Scripts]
     JSBridge.cs:
