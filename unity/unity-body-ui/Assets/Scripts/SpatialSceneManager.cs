@@ -29,13 +29,16 @@ public class SpatialSceneManager : MonoBehaviour
     [SerializeField] private GameObject _preTissueBlock;
     [SerializeField] private List<GameObject> _TissueBlocks;
 
+    [Header("JSBridge")]
+    [SerializeField] private JSBridge _jsBridge;
+
     private List<string> _MaleEntityIds;
     private List<string> _FemaleEntityIds;
 
     private void Start()
     {
         //uncomment to load the inital scene when in unity editor runtime
-        //SetScene("https://ccf-api.hubmapconsortium.org/v1/scene?sex=male");
+        SetScene("https://ccf-api.hubmapconsortium.org/v1/scene?sex=male");
     }
 
     /// <summary>
@@ -153,6 +156,7 @@ public class SpatialSceneManager : MonoBehaviour
 
     /// <summary>
     /// Set the organ data to get grabbed when the model gets hovered over
+    /// Also attach the organ control script here
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="node"></param>
@@ -162,6 +166,12 @@ public class SpatialSceneManager : MonoBehaviour
         dataComponent.SceneGraph = node.scenegraph;
         dataComponent.RepresentationOf = node.representation_of;
         dataComponent.Tooltip = node.tooltip;
+
+        //attach the organ control script
+        obj.AddComponent<OrganControlScript>();
+
+        //pass the reference to the js bridge
+        obj.GetComponent<OrganControlScript>().jsBridge = _jsBridge;
     }
 
     /// <summary>
