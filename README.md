@@ -45,28 +45,19 @@
 - WebGLPluginJS.cs - A C# file that takes advantage of [DllImport("__Internal")] to connect to the JSLib file and output code to java script. This file holds all the function names and is the one that gets called in from Unity.
 - WebGLPluginJS.jsLib - This file is paired with the C# file to contain functions for data pasing back to java script. Incidentially this file is not a C# file so you may need to "reveal all files" in the text editor you are using as under normal circumstances it will remain hidden
 
+### Utility Scripts
+- DisableWedGLInputCapture - A special file that enables the user to press keyboard buttons for the webv page. Without this file the WebGL would disable keybaord inputs and the user would not be able to type inputs.
+- LeaveFinder.cs - A utility script that finds all the leaves for a given unity game object. Used to great effect for finding all the children during organ loading.
+- MaterialExtensions.cs - A utility file that allows the user to modify the material for the organs and adjust opacity and other parameters.
+- MatrixExtensions.cs - A utility script that contains one function to build the transoform matrixes for the organs based off their data
 
 
-    [Utility Scripts]
-    DisableWedGLInputCapture - A special file that enables the user to press keyboard buttons for the webv page. Without this file the WebGL would disable keybaord inputs and the user would not be able to type inputs.
-
-    LeaveFinder.cs - A utility script that finds all the leaves for a given unity game object. Used to great effect for finding all the children during organ loading.
-
-    MaterialExtensions.cs - A utility file that allows the user to modify the material for the organs and adjust opacity and other parameters.
-
-    MatrixExtensions.cs - A utility script that contains one function to build the transoform matrixes for the organs based off their data
-
-
-    [Data Scripts]
-    DataFetcher.cs - Has a function that convers a URL to a NodeArray which will be depreciated soon. More importantly it holds the JSON objects for the organs and the output objects.
-
-    OrganData.cs - Data for each individual organ to store and reference
-
-    CellTypeData.cs - The cell data for each organ. gets attached to a game object at runtime and then populates its data
-
-    CellTypeDataFetcher.cs - The script that sets all the cell type data for the CellTypeDataScript
-
-    TissueBlockData.cs - A script for the tissue blocks so that they can hold their data and refer to them when needed
+ ### Data Scripts
+- DataFetcher.cs - Has a function that convers a URL to a NodeArray which will be depreciated soon. More importantly it holds the JSON objects for the organs and the output objects.
+- OrganData.cs - Data for each individual organ to store and reference
+- CellTypeData.cs - The cell data for each organ. gets attached to a game object at runtime and then populates its data
+- CellTypeDataFetcher.cs - The script that sets all the cell type data for the CellTypeDataScript
+- TissueBlockData.cs - A script for the tissue blocks so that they can hold their data and refer to them when needed
 
 
 ## Unity Functions:
